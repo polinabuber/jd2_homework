@@ -15,7 +15,9 @@ public class Visitors extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int visitorCount = visitors.incrementAndGet();
-        try (FileWriter writer = new FileWriter("D:/work/jd2_homework/src/main/java/homework1/task9/visitors.txt", true);
+        String currentDir = System.getProperty("user.dir");
+        String filePath = currentDir +"/visitors.txt";
+        try (FileWriter writer = new FileWriter(filePath, true);
              PrintWriter out = resp.getWriter()) {
             writer.write("Visitors: " + visitorCount + "\n");
             out.println("<body><h1>Visitors: " + visitorCount + "</h1>");
