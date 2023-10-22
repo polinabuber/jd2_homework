@@ -8,19 +8,47 @@
     <changeSet id="1" author="buberpolina">
         <sql>
             CREATE TABLE expenses (
-            num INT,
+            id INT NOT NULL,
             paydate DATE,
             receiver INT,
-            value DECIMAL
+            value DECIMAL(5,2),
+            PRIMARY KEY (id)
             );
         </sql>
     </changeSet>
     <changeSet id="2" author="buberpolina">
         <sql>
             CREATE TABLE receivers (
-            num INT,
-            name VARCHAR(255)
+            id INT NOT NULL,
+            name VARCHAR(255),
+            PRIMARY KEY (id)
             );
+        </sql>
+    </changeSet>
+    <changeSet id="3" author="buberpolina">
+        <sql>
+            INSERT INTO receivers VALUES
+            (1,'Amazon Online Shopping'),
+            (2,'Target Retail Store'),
+            (3,'Shell Gas Station'),
+            (4,'Apple Online Store'),
+            (5,'Starbucks Coffee Shop');
+        </sql>
+    </changeSet>
+    <changeSet id="4" author="buberpolina">
+        <sql>
+            ALTER TABLE expenses
+            ADD FOREIGN KEY (receiver) REFERENCES receivers(id);
+        </sql>
+    </changeSet>
+    <changeSet id="5" author="buberpolina">
+        <sql>
+            INSERT INTO expenses VALUES
+            (1, '2020-07-27', 2, 250),
+            (2, '2020-08-30', 3, 40),
+            (3, '2020-09-14', 1, 720),
+            (4, '2020-09-15', 5, 12),
+            (5, '2020-11-07', 4, 3.99);
         </sql>
     </changeSet>
 </databaseChangeLog>
