@@ -3,9 +3,8 @@ package homework2.task4;
 import java.sql.*;
 
 public class Main {
-    public static final String EXPENSES_INSERT = "INSERT INTO expenses (id,paydate,receiver,value) VALUES (?, ?, ?, ?)";
     public static final String EXPENSES_FIND_ALL = "SELECT * FROM expenses";
-    public static final String RECEIVER_FIND_BY_ID = "SELECT name FROM receivers WHERE id = ";
+    public static final String RECEIVER_FIND_BY_ID = "SELECT name FROM receivers WHERE id =";
 
     public static void main(String[] args) throws ClassNotFoundException {
 
@@ -28,8 +27,8 @@ public class Main {
     }
 
     private static void printAllExpenses(Connection connection) throws SQLException {
-        PreparedStatement selectStatement = connection.prepareStatement(EXPENSES_FIND_ALL);
-        ResultSet resultSet = selectStatement.executeQuery();
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(EXPENSES_FIND_ALL);
         while (resultSet.next()) {
             int expenseId = resultSet.getInt("id");
             Date expensePaydate = resultSet.getDate("paydate");
@@ -41,8 +40,8 @@ public class Main {
     }
 
     private static String getReceiverNameById(int id, Connection connection) throws SQLException {
-        PreparedStatement receiverStatement = connection.prepareStatement(RECEIVER_FIND_BY_ID + id);
-        ResultSet receiverResultSet = receiverStatement.executeQuery();
+        Statement statement = connection.createStatement();
+        ResultSet receiverResultSet = statement.executeQuery(String.format("%s %d", RECEIVER_FIND_BY_ID, id));
         String receiverName = "";
         if (receiverResultSet.next()) {
             receiverName = receiverResultSet.getString("name");
@@ -51,12 +50,9 @@ public class Main {
     }
 
     private static void insertExpense(int id, String paydate, int receiver, double value, Connection connection) throws SQLException {
-        PreparedStatement insertStatement = connection.prepareStatement(EXPENSES_INSERT);
-        insertStatement.setInt(1, id);
-        insertStatement.setDate(2, Date.valueOf(paydate));
-        insertStatement.setInt(3, receiver);
-        insertStatement.setDouble(4, value);
-        insertStatement.executeUpdate();
+        String sql = String.format("INSERT INTO expenses (id,paydate,receiver,value) VALUES (%d, '%s', %d, %f)", id, paydate, receiver, value);
+        Statement statement = connection.createStatement();
+        statement.executeUpdate(sql);
     }
 
 
