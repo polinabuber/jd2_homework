@@ -51,4 +51,46 @@
             (5, '2020-11-07', 4, 3.99);
         </sql>
     </changeSet>
+
+                                                   <!-- task6-->
+
+    <changeSet id="6" author="buberpolina">
+        <sql>
+            SELECT
+            receivers.name,
+            SUM(expenses.value) as total
+            FROM receivers
+            JOIN expenses ON receivers.id = expenses.receiver
+            GROUP BY receivers.name;
+        </sql>
+    </changeSet>
+    <changeSet id="7" author="buberpolina">
+        <sql>
+            SELECT
+            receivers.name,
+            MAX(expenses.value) as max_payment,
+            SUM(expenses.value) as total
+            FROM receivers
+            JOIN expenses ON receivers.id = expenses.receiver
+            WHERE expenses.paydate =
+            (SELECT paydate FROM expenses WHERE receiver = receivers.id ORDER BY value DESC LIMIT 1)
+            GROUP BY receivers.name;
+        </sql>
+    </changeSet>
+    <changeSet id="8" author="buberpolina">
+        <sql>
+            SELECT
+            receivers.name,
+            MAX(daily_expenses.max_payment) as max_payment,
+            daily_expenses.total
+            FROM receivers
+            JOIN (SELECT receiver, paydate, MAX(value) as max_payment, SUM(value) as total FROM expenses
+            GROUP BY receiver, paydate) as daily_expenses ON receivers.id = daily_expenses.receiver
+            WHERE daily_expenses.total = (SELECT total FROM (SELECT receiver, paydate, SUM(value) as total
+            FROM expenses WHERE receiver = receivers.id GROUP BY receiver, paydate ORDER BY total DESC LIMIT 1) as subquery)
+            GROUP BY receivers.name, daily_expenses.total;
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>
