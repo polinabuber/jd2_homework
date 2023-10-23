@@ -5,6 +5,7 @@ import java.sql.*;
 public class Main {
     public static final String EXPENSES_FIND_ALL = "SELECT * FROM expenses";
     public static final String RECEIVER_FIND_BY_ID = "SELECT name FROM receivers WHERE id =";
+    public static final String EXPENSES_INSERT = "INSERT INTO expenses (id,paydate,receiver,value) VALUES (%d, '%s', %d, %f)";
 
     public static void main(String[] args) throws ClassNotFoundException {
 
@@ -50,7 +51,7 @@ public class Main {
     }
 
     private static void insertExpense(int id, String paydate, int receiver, double value, Connection connection) throws SQLException {
-        String sql = String.format("INSERT INTO expenses (id,paydate,receiver,value) VALUES (%d, '%s', %d, %f)", id, paydate, receiver, value);
+        String sql = String.format(EXPENSES_INSERT, id, paydate, receiver, value);
         Statement statement = connection.createStatement();
         statement.executeUpdate(sql);
     }
