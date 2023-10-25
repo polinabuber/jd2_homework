@@ -6,8 +6,8 @@ import java.sql.*;
 
 public class Main {
     public static final String EXPENSES_INSERT = "INSERT INTO expenses (id,paydate,receiver,value) VALUES (?, ?, ?, ?)";
-    public static final String EXPENSES_FIND_ALL = "SELECT * FROM expenses";
-    public static final String RECEIVER_FIND_BY_ID = "SELECT name FROM receivers WHERE id = ";
+    public static final String EXPENSES_ALL = "SELECT * FROM expenses";
+    public static final String RECEIVER_WHERE_ID = "SELECT name FROM receivers WHERE id = ";
 
     public static void main(String[] args) throws ClassNotFoundException {
 
@@ -30,7 +30,7 @@ public class Main {
     }
 
     private static void printAllExpenses(Connection connection) throws SQLException {
-        PreparedStatement selectStatement = connection.prepareStatement(EXPENSES_FIND_ALL);
+        PreparedStatement selectStatement = connection.prepareStatement(EXPENSES_ALL);
         ResultSet resultSet = selectStatement.executeQuery();
         while (resultSet.next()) {
             int expenseId = resultSet.getInt("id");
@@ -43,7 +43,7 @@ public class Main {
     }
 
     private static String getReceiverNameById(int id, Connection connection) throws SQLException {
-        PreparedStatement receiverStatement = connection.prepareStatement(RECEIVER_FIND_BY_ID + id);
+        PreparedStatement receiverStatement = connection.prepareStatement(RECEIVER_WHERE_ID + id);
         ResultSet receiverResultSet = receiverStatement.executeQuery();
         String receiverName = "";
         if (receiverResultSet.next()) {
