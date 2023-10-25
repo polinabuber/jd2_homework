@@ -29,6 +29,7 @@ public class Main {
         // Create a new expense and add it to the database
         Expenses newExpense = new Expenses();
         newExpense.setId(47);
+        newExpense.setPaydate("2021-12-14");
         newExpense.setReceiver(1);
         newExpense.setValue(100.0);
         dao.addExpense(newExpense);
