@@ -70,9 +70,8 @@ public class Main {
     }
 
     private static void insertExpense(int id, String paydate, int receiver, double value, Connection connection) throws SQLException {
-        String sql = String.format(EXPENSES_INSERT, id, paydate, receiver, value);
         try (Statement statement = connection.createStatement()) {
-            statement.executeUpdate(sql);
+            statement.executeUpdate(String.format(EXPENSES_INSERT, id, paydate, receiver, value));
         }
     }
 }
