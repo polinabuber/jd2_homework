@@ -19,7 +19,10 @@ public class Main {
         try {
             int id = Integer.parseInt(args[0]);
             String paydate = args[1];
-            LocalDate.parse(paydate);
+            LocalDate date = LocalDate.parse(paydate);
+            if (date.getYear() < 1900 || date.getYear() > Year.now().getValue()) {
+                throw new DateTimeParseException("Year out of range", paydate, 0);
+            }
             int receiver = Integer.parseInt(args[2]);
             double value = Double.parseDouble(args[3]);
 
