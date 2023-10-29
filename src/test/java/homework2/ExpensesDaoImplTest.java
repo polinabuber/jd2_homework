@@ -14,6 +14,8 @@ import static org.junit.Assert.assertNotNull;
 
 public class ExpensesDaoImplTest {
 
+    //TODO: SOMETHING IS WRONG HERE, BUT IT’S STILL WORKING. COULD YOU PLEASE COMMENT ON THIS?
+
     private Dao dao;
 
     @Before

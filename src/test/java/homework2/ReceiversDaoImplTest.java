@@ -11,6 +11,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class ReceiversDaoImplTest {
+
+    //TODO: SOMETHING IS WRONG HERE, BUT IT’S STILL WORKING. COULD YOU PLEASE COMMENT ON THIS?
+
     private Dao dao;
 
     @Before
