@@ -69,7 +69,6 @@
                 <configuration>
                     <propertyFile>src/main/resources/liquibase.properties</propertyFile>
                     <driver>com.mysql.cj.jdbc.Driver</driver>
-                    <url>jdbc:mysql://localhost:3306/jd2_homework?createDatabaseIfNotExist=true</url>
                     <username>user</username>
                     <password>user</password>
                 </configuration>
@@ -83,6 +82,20 @@
                             </goal>
                         </goals>
                         <configuration>
+                            <url>jdbc:mysql://localhost:3306/jd2_homework?createDatabaseIfNotExist=true</url>
+                            <changeLogFile>src/main/resources/changelog-master.xml</changeLogFile>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>update_test</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>
+                                update
+                            </goal>
+                        </goals>
+                        <configuration>
+                            <url>jdbc:mysql://localhost:3306/jd2_homework_test?createDatabaseIfNotExist=true</url>
                             <changeLogFile>src/main/resources/changelog-master.xml</changeLogFile>
                         </configuration>
                     </execution>
