@@ -9,7 +9,7 @@ import java.util.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class ExpensesDaoImplTest {
+public class ExpensesDaoImplTest { //IN PROCESS
 
     private static Dao dao;
 

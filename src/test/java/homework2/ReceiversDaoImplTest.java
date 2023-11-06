@@ -10,7 +10,7 @@
 //import static org.junit.Assert.assertEquals;
 //import static org.junit.Assert.assertNotNull;
 //
-//public class ReceiversDaoImplTest {
+//public class ReceiversDaoImplTest { //IN PROCESS
 //
 //    private static Dao dao;
 //
