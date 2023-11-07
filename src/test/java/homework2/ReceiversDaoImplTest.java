@@ -10,10 +10,23 @@ import java.util.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-//The tests run once, after the database is dropped.
-// After that, they fail with an error.
 
 public class ReceiversDaoImplTest {
+
+
+
+
+    //The tests run once, after the database is dropped.
+
+// After that, they fail with an error:
+
+    //  getExpenses(homework2.ExpensesDaoImplTest): Cannot add or update a child row: a foreign key constraint fails
+    //  (`jd2_homework_test`.`expenses`, CONSTRAINT `expenses_ibfk_1`
+    //  FOREIGN KEY (`receiver`) REFERENCES `receivers` (`id`))
+
+
+
+
 
     private static Dao dao;
 
@@ -31,10 +44,13 @@ public class ReceiversDaoImplTest {
 
     @After
     public void teardown() throws Exception {
-        dao = null;
         Connection connection = TestExpensesConnection.getConnection();
-        connection.createStatement().executeUpdate("DELETE FROM expenses;");
-        connection.createStatement().executeUpdate("DELETE FROM receivers;");
+        Statement statement = connection.createStatement();
+        statement.executeUpdate("SET FOREIGN_KEY_CHECKS=0;");
+        statement.executeUpdate("TRUNCATE TABLE expenses;");
+        statement.executeUpdate("TRUNCATE TABLE receivers;");
+        statement.executeUpdate("SET FOREIGN_KEY_CHECKS=1;");
+        dao = null;
         TestExpensesConnection.closeConnection();
     }
 
