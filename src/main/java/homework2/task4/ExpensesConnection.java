@@ -3,13 +3,13 @@ package homework2.task4;
 import java.sql.*;
 
 public class ExpensesConnection {
-    static ExpensesConnection dataSource;
+    private static ExpensesConnection dataSource;
 
-    private ExpensesConnection() throws ClassNotFoundException, SQLException {
+    protected ExpensesConnection() throws ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
     }
 
-    private Connection getExpensesConnection() throws ClassNotFoundException, SQLException {
+    protected Connection getExpensesConnection() throws SQLException {
         return DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/jd2_homework",
                 "user",
@@ -23,4 +23,5 @@ public class ExpensesConnection {
         }
         return dataSource.getExpensesConnection();
     }
+
 }

@@ -4,14 +4,15 @@ import homework2.task4.*;
 
 import java.sql.*;
 
-public class TestExpensesConnection {
-    static TestExpensesConnection dataSource;
+public class TestExpensesConnection extends ExpensesConnection{
 
-    private TestExpensesConnection() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
+    private static TestExpensesConnection dataSource;
+
+    protected TestExpensesConnection() throws ClassNotFoundException {
+        super();
     }
 
-    private Connection getExpensesConnection() throws ClassNotFoundException, SQLException {
+    protected Connection getExpensesConnection() throws SQLException {
         return DriverManager.getConnection(
                 "jdbc:mysql://localhost:3306/jd2_homework_test",
                 "user",
@@ -25,4 +26,11 @@ public class TestExpensesConnection {
         }
         return dataSource.getExpensesConnection();
     }
+    public static void closeConnection() throws SQLException {
+        if (dataSource != null) {
+            dataSource.getExpensesConnection().close();
+            dataSource = null;
+        }
+    }
+
 }
