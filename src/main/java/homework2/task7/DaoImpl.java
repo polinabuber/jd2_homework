@@ -14,6 +14,12 @@ public class DaoImpl implements Dao {
     public static final String RECEIVERS_WHERE_ID = "SELECT*FROM receivers WHERE id = ?";
     public static final String RECEIVERS_INSERT = "INSERT INTO receivers (id, name) VALUES (?, ?)";
 
+    private final Connection connection;
+
+    public DaoImpl(Connection connection) {
+        this.connection = connection;
+    }
+
     private static Expenses mapRowExpenses(ResultSet resultSet) throws SQLException {
         Expenses expenses = new Expenses();
         expenses.setId(resultSet.getInt("id"));
@@ -30,11 +36,12 @@ public class DaoImpl implements Dao {
         return receiver;
     }
 
+
     @Override
     public ArrayList<Expenses> getExpenses() {
         ArrayList<Expenses> expenses = new ArrayList<>();
         try (Connection connection = ExpensesConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(EXPENSES_ALL)) {
+             PreparedStatement preparedStatement = this.connection.prepareStatement(EXPENSES_ALL)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Expenses result = mapRowExpenses(resultSet);
@@ -49,7 +56,7 @@ public class DaoImpl implements Dao {
     @Override
     public Expenses getExpense(int num) {
         try (Connection connection = ExpensesConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(EXPENSES_WHERE_ID)) {
+             PreparedStatement preparedStatement = this.connection.prepareStatement(EXPENSES_WHERE_ID)) {
             preparedStatement.setInt(1, num);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -64,7 +71,7 @@ public class DaoImpl implements Dao {
     @Override
     public int addExpense(Expenses expenses) {
         try (Connection connection = ExpensesConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(EXPENSES_INSERT)) {
+             PreparedStatement preparedStatement = this.connection.prepareStatement(EXPENSES_INSERT)) {
             preparedStatement.setInt(1, expenses.getId());
             preparedStatement.setString(2, expenses.getPaydate());
             preparedStatement.setInt(3, expenses.getReceiver());
@@ -79,24 +86,24 @@ public class DaoImpl implements Dao {
     @Override
     public ArrayList<Receiver> getReceivers() {
         ArrayList<Receiver> receiver = new ArrayList<>();
-        try (Connection connection = ExpensesConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(RECEIVERS_ALL)) {
+        try (PreparedStatement preparedStatement = this.connection.prepareStatement(RECEIVERS_ALL)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Receiver result = mapRowReceivers(resultSet);
                 receiver.add(result);
             }
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return receiver;
     }
 
 
+
     @Override
     public Receiver getReceiver(int num) {
         try (Connection connection = ExpensesConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(RECEIVERS_WHERE_ID)) {
+             PreparedStatement preparedStatement = this.connection.prepareStatement(RECEIVERS_WHERE_ID)) {
             preparedStatement.setInt(1, num);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -112,7 +119,7 @@ public class DaoImpl implements Dao {
     @Override
     public int addReceiver(Receiver receiver) {
         try (Connection connection = ExpensesConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(RECEIVERS_INSERT)) {
+             PreparedStatement preparedStatement = this.connection.prepareStatement(RECEIVERS_INSERT)) {
             preparedStatement.setInt(1, receiver.getId());
             preparedStatement.setString(2, receiver.getName());
             preparedStatement.executeUpdate();
