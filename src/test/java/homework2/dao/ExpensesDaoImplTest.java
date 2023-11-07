@@ -1,5 +1,6 @@
-package homework2;
+package homework2.dao;
 
+import homework2.*;
 import homework2.task7.*;
 import org.junit.*;
 

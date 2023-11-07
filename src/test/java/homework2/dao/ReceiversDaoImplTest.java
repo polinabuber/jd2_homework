@@ -1,6 +1,7 @@
-package homework2;
+package homework2.dao;
 
 
+import homework2.*;
 import homework2.task7.*;
 import org.junit.*;
 
@@ -20,7 +21,7 @@ public class ReceiversDaoImplTest {
 
 // After that, they fail with an error:
 
-    //  getExpenses(homework2.ExpensesDaoImplTest): Cannot add or update a child row: a foreign key constraint fails
+    //  getExpenses(homework2.dao.ExpensesDaoImplTest): Cannot add or update a child row: a foreign key constraint fails
     //  (`jd2_homework_test`.`expenses`, CONSTRAINT `expenses_ibfk_1`
     //  FOREIGN KEY (`receiver`) REFERENCES `receivers` (`id`))
 
