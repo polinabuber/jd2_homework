@@ -1,34 +1,57 @@
 package homework2.task7;
 
 import homework2.*;
+import homework2.task7.dao.*;
+import homework2.task7.pojo.*;
+import org.hibernate.*;
 import org.junit.*;
 
-import java.sql.*;
+import java.text.*;
 import java.util.*;
 
 import static org.junit.Assert.*;
 
-public class DaoImplTest  {
+public class DaoImplTest {
     private static Dao dao;
+    public Date convertStringToDate(String dateStr) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = null;
+        try {
+            date = formatter.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+    public String convertDateToString(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        return formatter.format(date);
+    }
+
 
     @Before
-    public void setup() throws Exception {
-        Connection connection = TestExpensesConnection.getConnection();
-        dao = new DaoImpl(connection);
-        connection.createStatement().execute("SET FOREIGN_KEY_CHECKS=0;");
-        connection.createStatement().executeUpdate("TRUNCATE TABLE expenses;");
-        connection.createStatement().executeUpdate("TRUNCATE TABLE receivers;");
-        connection.createStatement().execute("SET FOREIGN_KEY_CHECKS=1;");
+    public void setup() {
+        dao = new DaoImpl(TestSessionFactory.getSessionFactory());
+        try (Session session = TestSessionFactory.getSessionFactory().openSession()) {
+            session.beginTransaction();
+            session.createSQLQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE expenses;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE receivers;").executeUpdate();
+            session.createSQLQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate();
+            session.getTransaction().commit();
+        }
     }
 
     @After
-    public void teardown() throws Exception {
-        Connection connection = TestExpensesConnection.getConnection();
-        connection.createStatement().execute("SET FOREIGN_KEY_CHECKS=0;");
-        connection.createStatement().executeUpdate("TRUNCATE TABLE expenses;");
-        connection.createStatement().executeUpdate("TRUNCATE TABLE receivers;");
-        connection.createStatement().execute("SET FOREIGN_KEY_CHECKS=1;");
-        TestExpensesConnection.closeConnection();
+    public void teardown() {
+        try (Session session = TestSessionFactory.getSessionFactory().openSession()) {
+            session.beginTransaction();
+            session.createSQLQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE expenses;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE receivers;").executeUpdate();
+            session.createSQLQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate();
+            session.getTransaction().commit();
+        }
         dao = null;
     }
 
@@ -36,14 +59,12 @@ public class DaoImplTest  {
     public void testGetExpenses() {
         // Given
         Receiver receiver = new Receiver();
-        receiver.setId(1);
-        receiver.setName("First Receiver");
+        receiver.setName("Test Receiver to getExpenses");
         dao.addReceiver(receiver);
 
         Expenses expenses = new Expenses();
-        expenses.setId(1);
-        expenses.setPaydate("2021-07-27");
-        expenses.setReceiver(receiver.getId());
+        expenses.setPaydate(convertStringToDate("2021-07-27"));
+        expenses.setReceiver(receiver);
         expenses.setValue(250);
         dao.addExpense(expenses);
 
@@ -55,55 +76,57 @@ public class DaoImplTest  {
         assertFalse(expensesList.isEmpty());
         Expenses expense = expensesList.get(0);
         assertEquals(1, expense.getId());
-        assertEquals("2021-07-27", expense.getPaydate());
-        assertEquals(1, expense.getReceiver());
+        assertEquals("2021-07-27", convertDateToString(expense.getPaydate()));
+        assertEquals(receiver, expense.getReceiver());
         assertEquals(250, expense.getValue(), 0.0);
     }
 
     @Test
     public void testGetExpense() {
         // Given
-        int num = 1;
         Receiver receiver = new Receiver();
-        receiver.setId(num);
-        receiver.setName("First Receiver");
+        receiver.setName("Test Receiver to addExpense");
         dao.addReceiver(receiver);
 
         Expenses expenses = new Expenses();
-        expenses.setId(num);
-        expenses.setPaydate("2021-07-27");
-        expenses.setReceiver(receiver.getId());
-        expenses.setValue(250);
-        dao.addExpense(expenses);
-
-        // When
-        Expenses expense = dao.getExpense(num);
-
-        // Then
-        assertNotNull(expense);
-        assertEquals(num, expense.getId());
-    }
-
-    @Test
-    public void testAddExpense() {
-        // Given
-        Receiver receiver = new Receiver();
-        receiver.setId(2);
-        receiver.setName("Second receiver");
-        dao.addReceiver(receiver);
-
-        Expenses expenses = new Expenses();
-        expenses.setId(2);
-        expenses.setPaydate("2022-07-27");
-        expenses.setReceiver(receiver.getId());
+        expenses.setPaydate(convertStringToDate("2022-07-27"));
+        expenses.setReceiver(receiver);
         expenses.setValue(350);
 
         // When
         int result = dao.addExpense(expenses);
 
         // Then
-        assertEquals(0, result);
-        Expenses addedExpense = dao.getExpense(2);
+        assertEquals(expenses.getId(), result);
+        Expenses addedExpense = dao.getExpense(expenses.getId());
+        assertNotNull(addedExpense);
+        assertEquals(expenses.getId(), addedExpense.getId());
+        assertEquals(expenses.getPaydate(), addedExpense.getPaydate());
+        assertEquals(expenses.getReceiver(), addedExpense.getReceiver());
+        assertEquals(expenses.getValue(), addedExpense.getValue(), 0.0);
+    }
+
+
+    @Test
+    public void testAddExpense() {
+        // Given
+        Receiver receiver = new Receiver();
+        receiver.setName("Test Receiver to addExpense");
+        dao.addReceiver(receiver);
+
+        Expenses expenses = new Expenses();
+
+        expenses.setPaydate(convertStringToDate("2022-07-27"));
+        expenses.setReceiver(receiver);
+        expenses.setValue(350);
+
+        // When
+        int result = dao.addExpense(expenses);
+
+        // Then
+        assertEquals(expenses.getId(), result);
+        Expenses addedExpense = dao.getExpense(1);
+        assertNotNull(addedExpense);
         assertEquals(expenses.getId(), addedExpense.getId());
         assertEquals(expenses.getPaydate(), addedExpense.getPaydate());
         assertEquals(expenses.getReceiver(), addedExpense.getReceiver());
@@ -114,8 +137,7 @@ public class DaoImplTest  {
     public void testGetReceivers() {
         // Given
         Receiver receiver = new Receiver();
-        receiver.setId(3);
-        receiver.setName("Third receiver");
+        receiver.setName("Test receiver to getReceivers");
         dao.addReceiver(receiver);
 
         // When
@@ -129,33 +151,34 @@ public class DaoImplTest  {
     @Test
     public void testGetReceiver() {
         // Given
-        int num = 4;
         Receiver receiver = new Receiver();
-        receiver.setId(num);
-        receiver.setName("Fourth receiver");
-        dao.addReceiver(receiver);
+        receiver.setName("Test receiver to getReceivers");
+        int id = dao.addReceiver(receiver);
 
         // When
-        Receiver retrievedReceiver = dao.getReceiver(num);
+        Receiver retrievedReceiver = dao.getReceiver(id);
 
         // Then
         assertNotNull(retrievedReceiver);
-        assertEquals(num, retrievedReceiver.getId());
+        assertEquals(id, retrievedReceiver.getId());
+        assertEquals(receiver.getName(), retrievedReceiver.getName());
     }
+
+
 
     @Test
     public void testAddReceiver() {
         // Given
         Receiver receiver = new Receiver();
-        receiver.setId(5);
-        receiver.setName("Fifth receiver");
+        receiver.setName("Test receiver to addReceiver");
 
         // When
         int result = dao.addReceiver(receiver);
 
         // Then
-        assertEquals(0, result);
-        Receiver addedReceiver = dao.getReceiver(5);
+        assertEquals(receiver.getId(), result);
+        Receiver addedReceiver = dao.getReceiver(result);
+        assertNotNull(addedReceiver);
         assertEquals(receiver.getId(), addedReceiver.getId());
         assertEquals(receiver.getName(), addedReceiver.getName());
     }
