@@ -8,7 +8,7 @@
     <changeSet id="1" author="buberpolina">
         <sql>
             CREATE TABLE expenses (
-            id INT NOT NULL,
+            id INT NOT NULL AUTO_INCREMENT,
             paydate DATE NOT NULL,
             receiver INT NOT NULL,
             value DECIMAL(5,2) NOT NULL,
@@ -19,7 +19,7 @@
     <changeSet id="2" author="buberpolina">
         <sql>
             CREATE TABLE receivers (
-            id INT NOT NULL,
+            id INT NOT NULL AUTO_INCREMENT,
             name VARCHAR(255) NOT NULL,
             PRIMARY KEY (id)
             );
