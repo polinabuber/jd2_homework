@@ -1,9 +1,15 @@
-package homework2.task7;
+package homework2.task7.pojo;
 
+import javax.persistence.*;
 import java.util.*;
-
+@Entity
+@Table(name = "receivers")
 public class Receiver {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
+    @Column(name = "name")
     private String name;
 
     public Receiver() {

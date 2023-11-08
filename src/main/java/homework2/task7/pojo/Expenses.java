@@ -1,17 +1,29 @@
-package homework2.task7;
+package homework2.task7.pojo;
 
+import javax.persistence.*;
 import java.util.*;
+@Entity
+@Table(name="expenses")
 
 public class Expenses {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
-    private String paydate;
-    private int receiver;
+    @Column(name = "paydate")
+    @Temporal(TemporalType.DATE)
+    private Date paydate;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "receiver", referencedColumnName = "id")
+    private Receiver receiver;
+    @Column(name = "value")
     private double value;
+
 
     public Expenses() {
     }
 
-    public Expenses(int id, String paydate, int receiver, double value) {
+    public Expenses(int id, Date paydate, Receiver receiver, double value) {
         this.id = id;
         this.paydate = paydate;
         this.receiver = receiver;
@@ -26,19 +38,19 @@ public class Expenses {
         this.id = id;
     }
 
-    public String getPaydate() {
+    public Date getPaydate() {
         return paydate;
     }
 
-    public void setPaydate(String paydate) {
+    public void setPaydate(Date paydate) {
         this.paydate = paydate;
     }
 
-    public int getReceiver() {
+    public Receiver getReceiver() {
         return receiver;
     }
 
-    public void setReceiver(int receiver) {
+    public void setReceiver(Receiver receiver) {
         this.receiver = receiver;
     }
 
@@ -58,9 +70,9 @@ public class Expenses {
         Expenses expenses = (Expenses) o;
 
         if (id != expenses.id) return false;
-        if (receiver != expenses.receiver) return false;
         if (Double.compare(expenses.value, value) != 0) return false;
-        return Objects.equals(paydate, expenses.paydate);
+        if (!Objects.equals(paydate, expenses.paydate)) return false;
+        return Objects.equals(receiver, expenses.receiver);
     }
 
     @Override
@@ -69,7 +81,7 @@ public class Expenses {
         long temp;
         result = id;
         result = 31 * result + (paydate != null ? paydate.hashCode() : 0);
-        result = 31 * result + receiver;
+        result = 31 * result + (receiver != null ? receiver.hashCode() : 0);
         temp = Double.doubleToLongBits(value);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
@@ -79,7 +91,7 @@ public class Expenses {
     public String toString() {
         return "Expenses{" +
                 "id=" + id +
-                ", paydate='" + paydate + '\'' +
+                ", paydate=" + paydate +
                 ", receiver=" + receiver +
                 ", value=" + value +
                 '}';
