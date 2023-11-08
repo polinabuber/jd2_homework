@@ -1,4 +1,6 @@
-package homework2.task7;
+package homework2.task7.dao;
+
+import homework2.task7.pojo.*;
 
 import java.util.*;
 
