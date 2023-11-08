@@ -11,7 +11,7 @@ public class DaoImpl implements Dao {
     public static final String EXPENSES_ALL = "FROM Expenses";
     public static final String RECEIVERS_ALL = "FROM Receiver";
 
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
 
 
@@ -40,11 +40,17 @@ public class DaoImpl implements Dao {
 
     @Override
     public int addExpense(Expenses expenses) {
+        Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = session.beginTransaction();
+            transaction = session.beginTransaction();
             int id = (int) session.save(expenses);
             transaction.commit();
             return id;
+        } catch (RuntimeException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
         }
     }
 
@@ -68,13 +74,20 @@ public class DaoImpl implements Dao {
 
     @Override
     public int addReceiver(Receiver receiver) {
+        Transaction transaction = null;
         try (Session session = sessionFactory.openSession()) {
-            Transaction transaction = session.beginTransaction();
-            session.save(receiver);
+            transaction = session.beginTransaction();
+            int id = (int) session.save(receiver);
             transaction.commit();
+            return id;
+        } catch (RuntimeException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            throw e;
         }
-        return 0;
     }
+
 
 
 }
