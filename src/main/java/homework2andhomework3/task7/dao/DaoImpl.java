@@ -1,6 +1,6 @@
-package homework2.task7.dao;
+package homework2andhomework3.task7.dao;
 
-import homework2.task7.pojo.*;
+import homework2andhomework3.task7.pojo.*;
 import org.hibernate.*;
 import org.hibernate.query.Query;
 
