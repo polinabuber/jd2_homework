@@ -27,6 +27,18 @@ public class DaoImplTest {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         return formatter.format(date);
     }
+    private static Receiver getReceiver() {
+        Receiver receiver = new Receiver();
+        receiver.setName("Test Receiver");
+        dao.addReceiver(receiver);
+        return receiver;
+    }
+    private static void extracted(Expenses expenses, Expenses addedExpense) {
+        assertEquals(expenses.getId(), addedExpense.getId());
+        assertEquals(expenses.getPaydate(), addedExpense.getPaydate());
+        assertEquals(expenses.getReceiver(), addedExpense.getReceiver());
+        assertEquals(expenses.getValue(), addedExpense.getValue(), 0.0);
+    }
 
 
     @Before
@@ -47,8 +59,8 @@ public class DaoImplTest {
         try (Session session = TestSessionFactory.getSessionFactory().openSession()) {
             session.beginTransaction();
             session.createSQLQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate();
-            session.createSQLQuery("TRUNCATE TABLE expenses;").executeUpdate();
-            session.createSQLQuery("TRUNCATE TABLE receivers;").executeUpdate();
+//            session.createSQLQuery("TRUNCATE TABLE expenses;").executeUpdate();
+//            session.createSQLQuery("TRUNCATE TABLE receivers;").executeUpdate();
             session.createSQLQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate();
             session.getTransaction().commit();
         }
@@ -58,9 +70,7 @@ public class DaoImplTest {
     @Test
     public void testGetExpenses() {
         // Given
-        Receiver receiver = new Receiver();
-        receiver.setName("Test Receiver to getExpenses");
-        dao.addReceiver(receiver);
+        Receiver receiver = getReceiver();
 
         Expenses expenses = new Expenses();
         expenses.setPaydate(convertStringToDate("2021-07-27"));
@@ -81,12 +91,11 @@ public class DaoImplTest {
         assertEquals(250, expense.getValue(), 0.0);
     }
 
+
     @Test
     public void testGetExpense() {
         // Given
-        Receiver receiver = new Receiver();
-        receiver.setName("Test Receiver to addExpense");
-        dao.addReceiver(receiver);
+        Receiver receiver = getReceiver();
 
         Expenses expenses = new Expenses();
         expenses.setPaydate(convertStringToDate("2022-07-27"));
@@ -100,19 +109,14 @@ public class DaoImplTest {
         assertEquals(expenses.getId(), result);
         Expenses addedExpense = dao.getExpense(expenses.getId());
         assertNotNull(addedExpense);
-        assertEquals(expenses.getId(), addedExpense.getId());
-        assertEquals(expenses.getPaydate(), addedExpense.getPaydate());
-        assertEquals(expenses.getReceiver(), addedExpense.getReceiver());
-        assertEquals(expenses.getValue(), addedExpense.getValue(), 0.0);
+        extracted(expenses, addedExpense);
     }
 
 
     @Test
     public void testAddExpense() {
         // Given
-        Receiver receiver = new Receiver();
-        receiver.setName("Test Receiver to addExpense");
-        dao.addReceiver(receiver);
+        Receiver receiver = getReceiver();
 
         Expenses expenses = new Expenses();
 
@@ -127,18 +131,13 @@ public class DaoImplTest {
         assertEquals(expenses.getId(), result);
         Expenses addedExpense = dao.getExpense(1);
         assertNotNull(addedExpense);
-        assertEquals(expenses.getId(), addedExpense.getId());
-        assertEquals(expenses.getPaydate(), addedExpense.getPaydate());
-        assertEquals(expenses.getReceiver(), addedExpense.getReceiver());
-        assertEquals(expenses.getValue(), addedExpense.getValue(), 0.0);
+        extracted(expenses, addedExpense);
     }
 
     @Test
     public void testGetReceivers() {
         // Given
-        Receiver receiver = new Receiver();
-        receiver.setName("Test receiver to getReceivers");
-        dao.addReceiver(receiver);
+        Receiver receiver = getReceiver();
 
         // When
         ArrayList<Receiver> receivers = dao.getReceivers();
@@ -151,8 +150,7 @@ public class DaoImplTest {
     @Test
     public void testGetReceiver() {
         // Given
-        Receiver receiver = new Receiver();
-        receiver.setName("Test receiver to getReceivers");
+        Receiver receiver = getReceiver();
         int id = dao.addReceiver(receiver);
 
         // When
