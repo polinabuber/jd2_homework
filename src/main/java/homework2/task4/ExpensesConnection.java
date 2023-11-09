@@ -1,4 +1,4 @@
-package homework2andhomework3.task4;
+package homework2.task4;
 
 import java.sql.*;
 
