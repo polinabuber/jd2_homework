@@ -6,7 +6,7 @@ import homework2.task7.pojo.*;
 import java.text.*;
 import java.util.*;
 
-public class ExpensesMain {
+public class Main {
     public static Date convertStringToDate(String dateStr){
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date date = null;
@@ -54,6 +54,7 @@ public class ExpensesMain {
         newReceiver.setId(6);
         newReceiver.setName("Test");
         dao.addReceiver(newReceiver);
+
     }
 
 
