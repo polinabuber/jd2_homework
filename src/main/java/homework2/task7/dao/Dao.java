@@ -11,4 +11,7 @@ public interface Dao {
     ArrayList<Expenses> getExpenses();
     int addReceiver(Receiver receiverDto);
     int addExpense(Expenses expensesDto);
+    boolean deleteExpense(Expenses expenses);
+    boolean deleteReceiver(Receiver receiver);
+
 }
