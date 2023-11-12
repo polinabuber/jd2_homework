@@ -13,33 +13,44 @@ import static org.junit.Assert.*;
 
 public class DaoImplTest {
     private static Dao dao;
-    public Date convertStringToDate(String dateStr) {
+
+    public static Date convertStringToDate(String dateStr) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = null;
+        Date date;
         try {
             date = formatter.parse(dateStr);
         } catch (ParseException e) {
-            e.printStackTrace();
+            return null;
         }
         return date;
     }
+
     public String convertDateToString(Date date) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         return formatter.format(date);
     }
+
     private static Receiver getReceiver() {
         Receiver receiver = new Receiver();
         receiver.setName("Test Receiver");
         dao.addReceiver(receiver);
         return receiver;
     }
+
+    private static Expenses getExpenses(Receiver receiver, String date, double value) {
+        Expenses expenses = new Expenses();
+        expenses.setPaydate(convertStringToDate(date));
+        expenses.setReceiver(receiver);
+        expenses.setValue(value);
+        return expenses;
+    }
+
     private static void extracted(Expenses expenses, Expenses addedExpense) {
         assertEquals(expenses.getId(), addedExpense.getId());
         assertEquals(expenses.getPaydate(), addedExpense.getPaydate());
         assertEquals(expenses.getReceiver(), addedExpense.getReceiver());
         assertEquals(expenses.getValue(), addedExpense.getValue(), 0.0);
     }
-
 
     @Before
     public void setup() {
@@ -58,10 +69,6 @@ public class DaoImplTest {
     public void teardown() {
         try (Session session = TestSessionFactory.getSessionFactory().openSession()) {
             session.beginTransaction();
-            session.createSQLQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate();
-//            session.createSQLQuery("TRUNCATE TABLE expenses;").executeUpdate();
-//            session.createSQLQuery("TRUNCATE TABLE receivers;").executeUpdate();
-            session.createSQLQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate();
             session.getTransaction().commit();
         }
         dao = null;
@@ -71,11 +78,7 @@ public class DaoImplTest {
     public void testGetExpenses() {
         // Given
         Receiver receiver = getReceiver();
-
-        Expenses expenses = new Expenses();
-        expenses.setPaydate(convertStringToDate("2021-07-27"));
-        expenses.setReceiver(receiver);
-        expenses.setValue(250);
+        Expenses expenses = getExpenses(receiver, "2021-07-27", 250);
         dao.addExpense(expenses);
 
         // When
@@ -96,11 +99,7 @@ public class DaoImplTest {
     public void testGetExpense() {
         // Given
         Receiver receiver = getReceiver();
-
-        Expenses expenses = new Expenses();
-        expenses.setPaydate(convertStringToDate("2022-07-27"));
-        expenses.setReceiver(receiver);
-        expenses.setValue(350);
+        Expenses expenses = getExpenses(receiver, "2022-07-27", 350);
 
         // When
         int result = dao.addExpense(expenses);
@@ -117,12 +116,7 @@ public class DaoImplTest {
     public void testAddExpense() {
         // Given
         Receiver receiver = getReceiver();
-
-        Expenses expenses = new Expenses();
-
-        expenses.setPaydate(convertStringToDate("2022-07-27"));
-        expenses.setReceiver(receiver);
-        expenses.setValue(350);
+        Expenses expenses = getExpenses(receiver, "2022-07-27", 350);
 
         // When
         int result = dao.addExpense(expenses);
@@ -180,6 +174,39 @@ public class DaoImplTest {
         assertEquals(receiver.getId(), addedReceiver.getId());
         assertEquals(receiver.getName(), addedReceiver.getName());
     }
+
+    @Test
+    public void testDeleteExpense() {
+        // Given
+        Receiver receiver = getReceiver();
+        Expenses expenses = getExpenses(receiver, "2022-07-27", 350);
+        dao.addExpense(expenses);
+
+        // When
+        boolean isDeleted = dao.deleteExpense(expenses);
+
+        // Then
+        assertTrue(isDeleted);
+        Expenses deletedExpense = dao.getExpense(expenses.getId());
+        assertNull(deletedExpense);
+    }
+    @Test
+    public void testDeleteReceiver() {
+        // Given
+        Receiver receiver = getReceiver();
+
+        // When
+        boolean isDeleted = dao.deleteReceiver(receiver);
+
+        // Then
+        assertTrue(isDeleted);
+        Receiver deletedReceiver = dao.getReceiver(receiver.getId());
+        assertNull(deletedReceiver);
+    }
+
+
+
+
 }
 
 
