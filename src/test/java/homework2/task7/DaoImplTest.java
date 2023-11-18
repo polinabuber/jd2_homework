@@ -69,10 +69,61 @@ public class DaoImplTest {
     public void teardown() {
         try (Session session = TestSessionFactory.getSessionFactory().openSession()) {
             session.beginTransaction();
+            session.createSQLQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE expenses;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE receivers;").executeUpdate();
+            session.createSQLQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate();
             session.getTransaction().commit();
         }
         dao = null;
     }
+
+    @Test
+    public void testLoadExpense() {
+        // Given
+        Receiver receiver = getReceiver();
+        Expenses expenses = getExpenses(receiver, "2022-07-27", 350);
+        dao.addExpense(expenses);
+
+        // When
+        Expenses loadedExpense;
+        try (Session session = TestSessionFactory
+                .getSessionFactory().openSession()) {
+            session.beginTransaction();
+            loadedExpense = dao.loadExpense(expenses.getId());
+            session.getTransaction().commit();
+        }
+
+        // Then
+        assertNotNull(loadedExpense);
+        assertEquals(expenses.getId(), loadedExpense.getId());
+        assertEquals(expenses.getValue(), loadedExpense.getValue(), 0.0);
+        assertEquals(expenses.getReceiver(), loadedExpense.getReceiver());
+    }
+
+
+    @Test
+    public void testLoadReceiver() {
+        // Given
+        Receiver receiver = getReceiver();
+        dao.addReceiver(receiver);
+
+        // When
+        Receiver loadedReceiver;
+        try (Session session = TestSessionFactory
+                .getSessionFactory().openSession()) {
+            session.beginTransaction();
+            loadedReceiver = dao.loadReceiver(receiver.getId());
+            session.getTransaction().commit();
+        }
+
+        // Then
+        assertNotNull(loadedReceiver);
+        assertEquals(receiver.getId(), loadedReceiver.getId());
+        assertEquals(receiver.getName(), loadedReceiver.getName());
+    }
+
+
 
     @Test
     public void testGetExpenses() {
@@ -203,6 +254,7 @@ public class DaoImplTest {
         Receiver deletedReceiver = dao.getReceiver(receiver.getId());
         assertNull(deletedReceiver);
     }
+
 
 
 

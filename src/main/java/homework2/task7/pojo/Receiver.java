@@ -1,10 +1,11 @@
 package homework2.task7.pojo;
 
 import javax.persistence.*;
+import java.io.*;
 import java.util.*;
 @Entity
 @Table(name = "receivers")
-public class Receiver {
+public class Receiver implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
