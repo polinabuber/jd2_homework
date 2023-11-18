@@ -19,20 +19,45 @@ public class DaoImpl implements Dao {
         }
         this.sessionFactory = sessionFactory;
     }
+    @Override
+    public Expenses loadExpense(int num) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.load(Expenses.class, num);
+        } catch (ObjectNotFoundException e) {
+            System.out.println("Expenses with id " + num + " not found");
+            return null;
+        }
+    }
+
+    @Override
+    public Receiver loadReceiver(int num) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.load(Receiver.class, num);
+        } catch (ObjectNotFoundException e) {
+            System.out.println("Receiver with id " + num + " not found");
+            return null;
+        }
+    }
+
 
     @Override
     public ArrayList<Expenses> getExpenses() {
         try (Session session = sessionFactory.openSession()) {
             Query<Expenses> query = session.createQuery(EXPENSES_ALL, Expenses.class);
             return new ArrayList<>(query.list());
+        } catch (HibernateException e) {
+            System.out.println("Error when getting list of expenses: " + e.getMessage());
+            return null;
         }
     }
-
 
     @Override
     public Expenses getExpense(int num) {
         try (Session session = sessionFactory.openSession()) {
             return session.get(Expenses.class, num);
+        } catch (HibernateException e) {
+            System.out.println("Error when receiving expense: " + e.getMessage());
+            return null;
         }
     }
 
@@ -41,17 +66,21 @@ public class DaoImpl implements Dao {
         try (Session session = sessionFactory.openSession()) {
             Query<Receiver> query = session.createQuery(RECEIVERS_ALL, Receiver.class);
             return new ArrayList<>(query.list());
+        } catch (HibernateException e) {
+            System.out.println("Error getting list of receivers: " + e.getMessage());
+            return null;
         }
     }
-
 
     @Override
     public Receiver getReceiver(int num) {
         try (Session session = sessionFactory.openSession()) {
             return session.get(Receiver.class, num);
+        } catch (HibernateException e) {
+            System.out.println("Error when receiving receiver: " + e.getMessage());
+            return null;
         }
     }
-
     @Override
     public int addExpense(Expenses expenses) {
         Transaction transaction = null;
@@ -64,7 +93,8 @@ public class DaoImpl implements Dao {
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw e;
+            System.out.println("Error when adding expense:" + e.getMessage());
+            return -1;
         }
     }
 
@@ -80,7 +110,8 @@ public class DaoImpl implements Dao {
             if (transaction != null) {
                 transaction.rollback();
             }
-            throw e;
+            System.out.println("Error when adding receiver: " + e.getMessage());
+            return -1;
         }
     }
 
@@ -97,6 +128,7 @@ public class DaoImpl implements Dao {
             if (transaction != null) {
                 transaction.rollback();
             }
+            System.out.println("Error when deleting expense: " + e.getMessage());
             return false;
         }
     }
@@ -113,6 +145,7 @@ public class DaoImpl implements Dao {
             if (transaction != null) {
                 transaction.rollback();
             }
+            System.out.println("Error when deleting receiver: " + e.getMessage());
             return false;
         }
     }

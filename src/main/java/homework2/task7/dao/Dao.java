@@ -9,9 +9,12 @@ public interface Dao {
     ArrayList<Receiver> getReceivers();
     Expenses getExpense(int num);
     ArrayList<Expenses> getExpenses();
+    Expenses loadExpense(int num);
+    Receiver loadReceiver(int num);
     int addReceiver(Receiver receiverDto);
     int addExpense(Expenses expensesDto);
     boolean deleteExpense(Expenses expenses);
     boolean deleteReceiver(Receiver receiver);
+
 
 }

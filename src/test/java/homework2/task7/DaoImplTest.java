@@ -75,6 +75,53 @@ public class DaoImplTest {
     }
 
     @Test
+    public void testLoadExpense() {
+        // Given
+        Receiver receiver = getReceiver();
+        Expenses expenses = getExpenses(receiver, "2022-07-27", 350);
+        dao.addExpense(expenses);
+
+        // When
+        Expenses loadedExpense;
+        try (Session session = TestSessionFactory.getSessionFactory().openSession()) {
+            session.beginTransaction();
+            loadedExpense = dao.loadExpense(expenses.getId());
+            session.getTransaction().commit();
+        }
+
+        // Then
+        assertNotNull(loadedExpense);
+        assertEquals(expenses.getId(), loadedExpense.getId());
+        assertEquals(expenses.getValue(), loadedExpense.getValue(), 0.0);
+        assertEquals(expenses.getReceiver(), loadedExpense.getReceiver());
+    }
+
+
+//in the process
+    @Test
+    public void testLoadReceiver() {
+        // Given
+        Receiver receiver = getReceiver();
+        dao.addReceiver(receiver);
+
+        // When
+        Receiver loadedReceiver;
+        try (Session session = TestSessionFactory.getSessionFactory().openSession()) {
+            session.beginTransaction();
+            loadedReceiver = dao.loadReceiver(receiver.getId());
+            session.getTransaction().commit();
+        }
+
+        // Then
+        assertNotNull(loadedReceiver);
+        assertEquals(receiver.getId(), loadedReceiver.getId());
+        assertEquals(receiver.getName(), loadedReceiver.getName());
+    }
+
+
+    //in the process
+
+    @Test
     public void testGetExpenses() {
         // Given
         Receiver receiver = getReceiver();
@@ -203,6 +250,7 @@ public class DaoImplTest {
         Receiver deletedReceiver = dao.getReceiver(receiver.getId());
         assertNull(deletedReceiver);
     }
+
 
 
 

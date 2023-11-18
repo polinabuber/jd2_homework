@@ -1,11 +1,12 @@
 package homework2.task7.pojo;
 
 import javax.persistence.*;
+import java.io.*;
 import java.util.*;
 @Entity
 @Table(name="expenses")
 
-public class Expenses {
+public class Expenses implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
