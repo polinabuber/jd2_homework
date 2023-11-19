@@ -15,6 +15,11 @@ public interface Dao {
     int addExpense(Expenses expensesDto);
     boolean deleteExpense(Expenses expenses);
     boolean deleteReceiver(Receiver receiver);
+    void updateExpense(Expenses expenses);
+    void updateReceiver(Receiver receiver);
+    void flushSession();
+
+    void clearSession();
 
 
 }
