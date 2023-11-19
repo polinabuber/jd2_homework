@@ -111,6 +111,25 @@
             GROUP BY receivers.name, daily_expenses.total;
         </sql>
     </changeSet>
+                                       <!-- end task6-->
+
+    <changeSet id="9" author="buberpolina">
+        <sql>
+            ALTER TABLE receivers
+            ADD COLUMN last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+        </sql>
+    </changeSet>
+    <changeSet id="10" author="buberpolina">
+        <sql>
+            CREATE TRIGGER update_last_updated
+            BEFORE UPDATE
+            ON receivers
+            FOR EACH ROW
+            BEGIN
+            SET NEW.last_updated = NOW();
+            END;
+        </sql>
+    </changeSet>
 
 
 </databaseChangeLog>
