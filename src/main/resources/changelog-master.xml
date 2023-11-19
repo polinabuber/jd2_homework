@@ -116,7 +116,7 @@
     <changeSet id="9" author="buberpolina">
         <sql>
             ALTER TABLE receivers
-            ADD COLUMN last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+            ADD COLUMN last_updated TIMESTAMP;
         </sql>
     </changeSet>
     <changeSet id="10" author="buberpolina">
@@ -130,6 +130,7 @@
             END;
         </sql>
     </changeSet>
+
 
 
 </databaseChangeLog>
