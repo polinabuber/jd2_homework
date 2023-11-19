@@ -19,6 +19,64 @@ public class DaoImpl implements Dao {
         }
         this.sessionFactory = sessionFactory;
     }
+    public void flushSession() {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.getCurrentSession()) {
+            transaction = session.beginTransaction();
+            session.flush();
+            transaction.commit();
+        } catch (RuntimeException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.out.println("Error when flushing session: " + e.getMessage());
+        }
+    }
+
+
+    public void clearSession() {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.getCurrentSession()) {
+            transaction = session.beginTransaction();
+            session.clear();
+            transaction.commit();
+        } catch (RuntimeException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.out.println("Error when clearing session: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void updateExpense(Expenses expenses) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            session.update(expenses);
+            transaction.commit();
+        } catch (RuntimeException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.out.println("Error when updating expense: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void updateReceiver(Receiver receiver) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            session.update(receiver);
+            transaction.commit();
+        } catch (RuntimeException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.out.println("Error when updating receiver: " + e.getMessage());
+        }
+    }
     @Override
     public Expenses loadExpense(int num) {
         try (Session session = sessionFactory.openSession()) {
