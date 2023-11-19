@@ -77,6 +77,46 @@ public class DaoImplTest {
         }
         dao = null;
     }
+    @Test
+    public void testUpdateExpense() {
+        // Given
+        Receiver receiver = getReceiver();
+        Expenses expenses = getExpenses(receiver, "2022-07-27", 350);
+        dao.addExpense(expenses);
+
+        // When
+        expenses.setValue(400);
+        dao.updateExpense(expenses);
+        dao.flushSession();
+
+        // Then
+        Expenses updatedExpense = dao.loadExpense(expenses.getId());
+        assertNotNull(updatedExpense);
+        assertEquals(expenses.getValue(), updatedExpense.getValue(), 0.0);
+
+        // After
+        dao.clearSession();
+    }
+
+
+    @Test
+    public void testUpdateReceiver() {
+        // Given
+        Receiver receiver = getReceiver();
+
+        // When
+        receiver.setName("Updated Receiver");
+        dao.updateReceiver(receiver);
+        dao.flushSession();
+
+        // Then
+        Receiver updatedReceiver = dao.loadReceiver(receiver.getId());
+        assertNotNull(updatedReceiver);
+        assertEquals(receiver.getName(), updatedReceiver.getName());
+
+        // After
+        dao.clearSession();
+    }
 
     @Test
     public void testLoadExpense() {
@@ -255,6 +295,9 @@ public class DaoImplTest {
         Receiver deletedReceiver = dao.getReceiver(receiver.getId());
         assertNull(deletedReceiver);
     }
+
+
+
 
 
 }
