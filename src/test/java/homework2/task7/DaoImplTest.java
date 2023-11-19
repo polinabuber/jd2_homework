@@ -69,10 +69,10 @@ public class DaoImplTest {
     public void teardown() {
         try (Session session = TestSessionFactory.getSessionFactory().openSession()) {
             session.beginTransaction();
-            session.createSQLQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate();
-            session.createSQLQuery("TRUNCATE TABLE expenses;").executeUpdate();
-            session.createSQLQuery("TRUNCATE TABLE receivers;").executeUpdate();
-            session.createSQLQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate();
+//            session.createSQLQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate();
+//            session.createSQLQuery("TRUNCATE TABLE expenses;").executeUpdate();
+//            session.createSQLQuery("TRUNCATE TABLE receivers;").executeUpdate();
+//            session.createSQLQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate();
             session.getTransaction().commit();
         }
         dao = null;
@@ -87,18 +87,19 @@ public class DaoImplTest {
 
         // When
         Expenses loadedExpense;
-        try (Session session = TestSessionFactory
-                .getSessionFactory().openSession()) {
-            session.beginTransaction();
-            loadedExpense = dao.loadExpense(expenses.getId());
-            session.getTransaction().commit();
-        }
+        loadedExpense = dao.loadExpense(expenses.getId());
+
 
         // Then
         assertNotNull(loadedExpense);
         assertEquals(expenses.getId(), loadedExpense.getId());
         assertEquals(expenses.getValue(), loadedExpense.getValue(), 0.0);
         assertEquals(expenses.getReceiver(), loadedExpense.getReceiver());
+
+        //Check for non-existent id
+        int nonExistentId = 999;
+        Expenses nonExistentExpense = dao.loadExpense(nonExistentId);
+        assertNull(nonExistentExpense);
     }
 
 
@@ -110,19 +111,19 @@ public class DaoImplTest {
 
         // When
         Receiver loadedReceiver;
-        try (Session session = TestSessionFactory
-                .getSessionFactory().openSession()) {
-            session.beginTransaction();
-            loadedReceiver = dao.loadReceiver(receiver.getId());
-            session.getTransaction().commit();
-        }
+        loadedReceiver = dao.loadReceiver(receiver.getId());
+
 
         // Then
         assertNotNull(loadedReceiver);
         assertEquals(receiver.getId(), loadedReceiver.getId());
         assertEquals(receiver.getName(), loadedReceiver.getName());
-    }
 
+        //Check for non-existent id
+        int nonExistentId = 999;
+        Receiver nonExistentReceiver= dao.loadReceiver(nonExistentId);
+        assertNull(nonExistentReceiver);
+    }
 
 
     @Test
@@ -208,7 +209,6 @@ public class DaoImplTest {
     }
 
 
-
     @Test
     public void testAddReceiver() {
         // Given
@@ -241,6 +241,7 @@ public class DaoImplTest {
         Expenses deletedExpense = dao.getExpense(expenses.getId());
         assertNull(deletedExpense);
     }
+
     @Test
     public void testDeleteReceiver() {
         // Given
@@ -254,9 +255,6 @@ public class DaoImplTest {
         Receiver deletedReceiver = dao.getReceiver(receiver.getId());
         assertNull(deletedReceiver);
     }
-
-
-
 
 
 }
