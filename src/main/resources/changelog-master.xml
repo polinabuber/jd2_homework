@@ -130,6 +130,50 @@
             END;
         </sql>
     </changeSet>
+    <changeSet id="11" author="buberpolina">
+        <sql>
+            CREATE TABLE clients (
+            id INT NOT NULL AUTO_INCREMENT,
+            expenses_id INT NOT NULL,
+            name VARCHAR(255) NOT NULL,
+            phone_number VARCHAR(255) NOT NULL,
+            PRIMARY KEY (id),
+            FOREIGN KEY (expenses_id) REFERENCES expenses(id)
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="12" author="buberpolina">
+        <sql>
+            CREATE TABLE client_details (
+            id INT NOT NULL,
+            address VARCHAR(255) NOT NULL,
+            registration_date DATE NOT NULL,
+            birthday_date DATE NOT NULL,
+            PRIMARY KEY (id),
+            FOREIGN KEY (id) REFERENCES clients(id)
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="13" author="buberpolina">
+        <sql>
+            INSERT INTO clients (expenses_id, name, phone_number) VALUES
+            (1, 'John Doe', '555-555-5555'),
+            (2, 'Jane Smith', '555-555-5556'),
+            (3, 'Bob Johnson', '555-555-5557'),
+            (4, 'Alice Williams', '555-555-5558'),
+            (5, 'Charlie Brown', '555-555-5559');
+        </sql>
+    </changeSet>
+    <changeSet id="14" author="assistant">
+        <sql>
+            INSERT INTO client_details (id, address, registration_date, birthday_date) VALUES
+            (1, '123 Main St', '2020-07-27', '1980-01-01'),
+            (2, '456 Maple Ave', '2020-08-30', '1981-02-02'),
+            (3, '789 Oak Dr', '2020-09-14', '1982-03-03'),
+            (4, '321 Pine Rd', '2020-10-15', '1983-04-04'),
+            (5, '654 Elm Ln', '2020-11-07', '1984-05-05');
+        </sql>
+    </changeSet>
 
 
 

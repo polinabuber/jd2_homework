@@ -11,6 +11,8 @@
         <property name="hibernate.flushMode">COMMIT</property>
         <mapping class = "homework2.task7.pojo.Expenses"/>
         <mapping class = "homework2.task7.pojo.Receiver"/>
+        <mapping class = "homework2.task7.pojo.Client"/>
+        <mapping class = "homework2.task7.pojo.ClientDetails"/>
 
 
     </session-factory>
