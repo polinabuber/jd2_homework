@@ -7,19 +7,31 @@ import java.util.*;
 public interface Dao {
     Receiver getReceiver(int num);
     ArrayList<Receiver> getReceivers();
+    Receiver loadReceiver(int num);
+    int addReceiver(Receiver receiverDto);
+    boolean deleteReceiver(Receiver receiver);
+    void updateReceiver(Receiver receiver);
+
     Expenses getExpense(int num);
     ArrayList<Expenses> getExpenses();
     Expenses loadExpense(int num);
-    Receiver loadReceiver(int num);
-    int addReceiver(Receiver receiverDto);
     int addExpense(Expenses expensesDto);
     boolean deleteExpense(Expenses expenses);
-    boolean deleteReceiver(Receiver receiver);
     void updateExpense(Expenses expenses);
-    void updateReceiver(Receiver receiver);
+
+    ArrayList<Client> getClients();
+    int addClient(Client client);
+    boolean deleteClient(Client client);
+    void updateClient(Client client);
+    Client getClient(int id);
+
+    ClientDetails getClientDetails(int id);
+    ArrayList<ClientDetails> getClientDetails();
+    int addClientDetails(ClientDetails clientDetails);
+    boolean deleteClientDetails(ClientDetails clientDetails);
+    void updateClientDetails(ClientDetails clientDetails);
+
     void flushSession();
-
     void clearSession();
-
-
 }
+
