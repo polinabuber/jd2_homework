@@ -14,6 +14,42 @@ import static org.junit.Assert.*;
 public class DaoImplTest {
     private static Dao dao;
 
+    private static Receiver getReceiver() {
+        Receiver receiver = new Receiver();
+        receiver.setName("Test Receiver");
+        dao.addReceiver(receiver);
+        return receiver;
+    }
+//    private static Client getClient() {
+//        Client client = new Client();
+//        client.setName("Test Client");
+//        client.setPhoneNumber("555-555-5555");
+//        dao.addClient(client);
+//        return client;
+//    }
+
+    private static Expenses getExpenses(Receiver receiver, String date, double value) {
+        Expenses expenses = new Expenses();
+        expenses.setPaydate(convertStringToDate(date));
+        expenses.setReceiver(receiver);
+        expenses.setValue(value);
+        return expenses;
+    }
+
+    private static void extracted(Expenses expenses, Expenses addedExpense) {
+        assertEquals(expenses.getId(), addedExpense.getId());
+        assertEquals(expenses.getPaydate(), addedExpense.getPaydate());
+        assertEquals(expenses.getReceiver(), addedExpense.getReceiver());
+        assertEquals(expenses.getValue(), addedExpense.getValue(), 0.0);
+    }
+//    private static ClientDetails getClientDetails(Client client, String address, String registrationDate, String birthdayDate) {
+//        ClientDetails clientDetails = new ClientDetails();
+//        clientDetails.setId(client.getId());
+//        clientDetails.setAddress(address);
+//        clientDetails.setRegistrationDate(convertStringToDate(registrationDate));
+//        clientDetails.setBirthdayDate(convertStringToDate(birthdayDate));
+//        return clientDetails;
+//    }
     public static Date convertStringToDate(String dateStr) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date date;
@@ -30,27 +66,6 @@ public class DaoImplTest {
         return formatter.format(date);
     }
 
-    private static Receiver getReceiver() {
-        Receiver receiver = new Receiver();
-        receiver.setName("Test Receiver");
-        dao.addReceiver(receiver);
-        return receiver;
-    }
-
-    private static Expenses getExpenses(Receiver receiver, String date, double value) {
-        Expenses expenses = new Expenses();
-        expenses.setPaydate(convertStringToDate(date));
-        expenses.setReceiver(receiver);
-        expenses.setValue(value);
-        return expenses;
-    }
-
-    private static void extracted(Expenses expenses, Expenses addedExpense) {
-        assertEquals(expenses.getId(), addedExpense.getId());
-        assertEquals(expenses.getPaydate(), addedExpense.getPaydate());
-        assertEquals(expenses.getReceiver(), addedExpense.getReceiver());
-        assertEquals(expenses.getValue(), addedExpense.getValue(), 0.0);
-    }
 
     @Before
     public void setup() {
@@ -60,6 +75,8 @@ public class DaoImplTest {
             session.createSQLQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate();
             session.createSQLQuery("TRUNCATE TABLE expenses;").executeUpdate();
             session.createSQLQuery("TRUNCATE TABLE receivers;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE clients;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE client_details;").executeUpdate();
             session.createSQLQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate();
             session.getTransaction().commit();
         }
@@ -69,55 +86,16 @@ public class DaoImplTest {
     public void teardown() {
         try (Session session = TestSessionFactory.getSessionFactory().openSession()) {
             session.beginTransaction();
-//            session.createSQLQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate();
-//            session.createSQLQuery("TRUNCATE TABLE expenses;").executeUpdate();
-//            session.createSQLQuery("TRUNCATE TABLE receivers;").executeUpdate();
-//            session.createSQLQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate();
+            session.createSQLQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE expenses;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE receivers;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE clients;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE client_details;").executeUpdate();
+            session.createSQLQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate();
             session.getTransaction().commit();
         }
         dao = null;
     }
-    @Test
-    public void testUpdateExpense() {
-        // Given
-        Receiver receiver = getReceiver();
-        Expenses expenses = getExpenses(receiver, "2022-07-27", 350);
-        dao.addExpense(expenses);
-
-        // When
-        expenses.setValue(400);
-        dao.updateExpense(expenses);
-        dao.flushSession();
-
-        // Then
-        Expenses updatedExpense = dao.loadExpense(expenses.getId());
-        assertNotNull(updatedExpense);
-        assertEquals(expenses.getValue(), updatedExpense.getValue(), 0.0);
-
-        // After
-        dao.clearSession();
-    }
-
-
-    @Test
-    public void testUpdateReceiver() {
-        // Given
-        Receiver receiver = getReceiver();
-
-        // When
-        receiver.setName("Updated Receiver");
-        dao.updateReceiver(receiver);
-        dao.flushSession();
-
-        // Then
-        Receiver updatedReceiver = dao.loadReceiver(receiver.getId());
-        assertNotNull(updatedReceiver);
-        assertEquals(receiver.getName(), updatedReceiver.getName());
-
-        // After
-        dao.clearSession();
-    }
-
     @Test
     public void testLoadExpense() {
         // Given
@@ -164,7 +142,6 @@ public class DaoImplTest {
         Receiver nonExistentReceiver= dao.loadReceiver(nonExistentId);
         assertNull(nonExistentReceiver);
     }
-
 
     @Test
     public void testGetExpenses() {
@@ -221,6 +198,41 @@ public class DaoImplTest {
     }
 
     @Test
+    public void testUpdateExpense() {
+        // Given
+        Receiver receiver = getReceiver();
+        Expenses expenses = getExpenses(receiver, "2022-07-27", 350);
+        dao.addExpense(expenses);
+
+        // When
+        expenses.setValue(400);
+        dao.updateExpense(expenses);
+        dao.flushSession();
+
+        // Then
+        Expenses updatedExpense = dao.loadExpense(expenses.getId());
+        assertNotNull(updatedExpense);
+        assertEquals(expenses.getValue(), updatedExpense.getValue(), 0.0);
+
+        // After
+        dao.clearSession();
+    }
+    @Test
+    public void testDeleteExpense() {
+        // Given
+        Receiver receiver = getReceiver();
+        Expenses expenses = getExpenses(receiver, "2022-07-27", 350);
+        dao.addExpense(expenses);
+
+        // When
+        boolean isDeleted = dao.deleteExpense(expenses);
+
+        // Then
+        assertTrue(isDeleted);
+        Expenses deletedExpense = dao.getExpense(expenses.getId());
+        assertNull(deletedExpense);
+    }
+    @Test
     public void testGetReceivers() {
         // Given
         Receiver receiver = getReceiver();
@@ -266,22 +278,25 @@ public class DaoImplTest {
         assertEquals(receiver.getName(), addedReceiver.getName());
     }
 
+
     @Test
-    public void testDeleteExpense() {
+    public void testUpdateReceiver() {
         // Given
         Receiver receiver = getReceiver();
-        Expenses expenses = getExpenses(receiver, "2022-07-27", 350);
-        dao.addExpense(expenses);
 
         // When
-        boolean isDeleted = dao.deleteExpense(expenses);
+        receiver.setName("Updated Receiver");
+        dao.updateReceiver(receiver);
+        dao.flushSession();
 
         // Then
-        assertTrue(isDeleted);
-        Expenses deletedExpense = dao.getExpense(expenses.getId());
-        assertNull(deletedExpense);
-    }
+        Receiver updatedReceiver = dao.loadReceiver(receiver.getId());
+        assertNotNull(updatedReceiver);
+        assertEquals(receiver.getName(), updatedReceiver.getName());
 
+        // After
+        dao.clearSession();
+    }
     @Test
     public void testDeleteReceiver() {
         // Given
@@ -295,6 +310,84 @@ public class DaoImplTest {
         Receiver deletedReceiver = dao.getReceiver(receiver.getId());
         assertNull(deletedReceiver);
     }
+//    @Test
+//    public void testAddClient() {
+//        // Given
+//        Client client = getClient();
+//
+//        // Then
+//        Client addedClient = dao.getClient(client.getId());
+//        assertNotNull(addedClient);
+//        assertEquals(client.getName(), addedClient.getName());
+//
+//    }
+
+//    @Test
+//    public void testDeleteClient() {
+//        // Given
+//        Client client = getClient();
+//
+//        // When
+//        dao.deleteClient(client.getId());
+//        dao.flushSession();
+//
+//        // Then
+//        Client deletedClient = dao.getClient(client.getId());
+//        assertNull(deletedClient);
+//
+//    }
+
+//    @Test
+//    public void testAddClientDetails() {
+//        // Given
+//        Client client = getClient();
+//        ClientDetails clientDetails = getClientDetails(client, "123 Main St", "2022-07-27", "1980-01-01");
+//        dao.addClientDetails(clientDetails);
+//
+//        // Then
+//        ClientDetails addedClientDetails = dao.getClientDetails(clientDetails.getId());
+//        assertNotNull(addedClientDetails);
+//        assertEquals(clientDetails.getAddress(), addedClientDetails.getAddress());
+//
+//    }
+//    @Test
+//    public void testUpdateClient() {
+//        // Given
+//        Client client = getClient();
+//
+//        // When
+//        client.setName("Updated Client");
+//        dao.updateClient(client);
+//        dao.flushSession();
+//
+//        // Then
+//        Client updatedClient = dao.getClient(client.getId());
+//        assertNotNull(updatedClient);
+//        assertEquals(client.getName(), updatedClient.getName());
+//
+//    }
+
+//    @Test
+//    public void testDeleteClientDetails() {
+//        // Given
+//        Client client = getClient();
+//        ClientDetails clientDetails = getClientDetails(client, "123 Main St", "2022-07-27", "1980-01-01");
+//        dao.addClientDetails(clientDetails);
+//
+//        // When
+//        dao.deleteClientDetails(clientDetails.getId());
+//        dao.flushSession();
+//
+//        // Then
+//        ClientDetails deletedClientDetails = dao.getClientDetails(clientDetails.getId());
+//        assertNull(deletedClientDetails);
+//
+//    }
+
+
+
+
+
 
 
 
