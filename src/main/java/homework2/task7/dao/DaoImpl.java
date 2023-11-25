@@ -25,7 +25,7 @@ public class DaoImpl implements Dao {
     public Session getSession() {
         return this.sessionFactory.getCurrentSession();
     }
-    public Serializable getIdentifier(Object entity) {
+    public Serializable getIdentifier(Object entity) throws HibernateException {
         if (entity == null) {
             return null;
         }
