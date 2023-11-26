@@ -21,6 +21,7 @@ public class Main {
     public static void main(String[] args) {
         DaoImpl dao = new DaoImpl(ExpensesSessionFactory.getSessionFactory());
 
+
         // Extracting identifiers from Client and ClientDetails entities
         ArrayList<Client> clients = dao.getClients();
         for (Client client : clients) {

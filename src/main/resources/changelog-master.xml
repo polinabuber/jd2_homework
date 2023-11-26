@@ -136,7 +136,7 @@
             id INT NOT NULL AUTO_INCREMENT,
             expenses_id INT NOT NULL,
             name VARCHAR(255) NOT NULL,
-            phone_number VARCHAR(255) NOT NULL,
+            phone_number VARCHAR(255) DEFAULT NULL,
             PRIMARY KEY (id),
             FOREIGN KEY (expenses_id) REFERENCES expenses(id)
             );
@@ -147,8 +147,8 @@
             CREATE TABLE client_details (
             id INT NOT NULL,
             address VARCHAR(255) NOT NULL,
-            registration_date DATE NOT NULL,
-            birthday_date DATE NOT NULL,
+            registration_date DATE DEFAULT NULL,
+            birthday_date DATE DEFAULT NULL,
             PRIMARY KEY (id),
             FOREIGN KEY (id) REFERENCES clients(id)
             );
