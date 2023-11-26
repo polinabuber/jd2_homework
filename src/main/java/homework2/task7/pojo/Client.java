@@ -11,23 +11,9 @@ public class Client implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "id")
     private int id;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "expenses_id", referencedColumnName = "id")
-    private Expenses expenses;
-    @Column(name = "name")
-    private String name;
-    @Column(name = "phone_number")
-    private String phoneNumber;
 
-    public Client() {
-    }
-
-    public Client(int id, Expenses expenses, String name, String phoneNumber) {
-        this.id = id;
-        this.expenses = expenses;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
-    }
+    @Embedded
+    private ClientInfo clientInfo;
 
     public int getId() {
         return id;
@@ -37,28 +23,12 @@ public class Client implements Serializable {
         this.id = id;
     }
 
-    public Expenses getExpenses() {
-        return expenses;
+    public ClientInfo getClientInfo() {
+        return clientInfo;
     }
 
-    public void setExpenses(Expenses expenses) {
-        this.expenses = expenses;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setClientInfo(ClientInfo clientInfo) {
+        this.clientInfo = clientInfo;
     }
 
     @Override
@@ -69,17 +39,13 @@ public class Client implements Serializable {
         Client client = (Client) o;
 
         if (id != client.id) return false;
-        if (!Objects.equals(expenses, client.expenses)) return false;
-        if (!Objects.equals(name, client.name)) return false;
-        return Objects.equals(phoneNumber, client.phoneNumber);
+        return Objects.equals(clientInfo, client.clientInfo);
     }
 
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + (expenses != null ? expenses.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
+        result = 31 * result + (clientInfo != null ? clientInfo.hashCode() : 0);
         return result;
     }
 
@@ -87,9 +53,8 @@ public class Client implements Serializable {
     public String toString() {
         return "Client{" +
                 "id=" + id +
-                ", expenses=" + expenses +
-                ", name='" + name + '\'' +
-                ", phoneNumber='" + phoneNumber + '\'' +
+                ", clientInfo=" + clientInfo +
                 '}';
     }
 }
+

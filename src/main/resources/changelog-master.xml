@@ -164,7 +164,7 @@
             (5, 'Charlie Brown', '555-555-5559');
         </sql>
     </changeSet>
-    <changeSet id="14" author="assistant">
+    <changeSet id="14" author="buberpolina">
         <sql>
             INSERT INTO client_details (id, address, registration_date, birthday_date) VALUES
             (1, '123 Main St', '2020-07-27', '1980-01-01'),

@@ -11,23 +11,16 @@ public class ClientDetails implements Serializable {
     @GeneratedValue(strategy = GenerationType.TABLE)
     @Column(name = "id")
     private int id;
-    @Column(name = "address")
-    private String address;
-    @Column(name = "registration_date")
-    @Temporal(TemporalType.DATE)
-    private Date registrationDate;
-    @Column(name = "birthday_date")
-    @Temporal(TemporalType.DATE)
-    private Date birthdayDate;
+
+    @Embedded
+    private ClientDetailsInfo clientDetailsInfo;
 
     public ClientDetails() {
     }
 
-    public ClientDetails(int id, String address, Date registrationDate, Date birthdayDate) {
+    public ClientDetails(int id, ClientDetailsInfo clientDetailsInfo) {
         this.id = id;
-        this.address = address;
-        this.registrationDate = registrationDate;
-        this.birthdayDate = birthdayDate;
+        this.clientDetailsInfo = clientDetailsInfo;
     }
 
     public int getId() {
@@ -38,28 +31,12 @@ public class ClientDetails implements Serializable {
         this.id = id;
     }
 
-    public String getAddress() {
-        return address;
+    public ClientDetailsInfo getClientDetailsInfo() {
+        return clientDetailsInfo;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public Date getRegistrationDate() {
-        return registrationDate;
-    }
-
-    public void setRegistrationDate(Date registrationDate) {
-        this.registrationDate = registrationDate;
-    }
-
-    public Date getBirthdayDate() {
-        return birthdayDate;
-    }
-
-    public void setBirthdayDate(Date birthdayDate) {
-        this.birthdayDate = birthdayDate;
+    public void setClientDetailsInfo(ClientDetailsInfo clientDetailsInfo) {
+        this.clientDetailsInfo = clientDetailsInfo;
     }
 
     @Override
@@ -70,18 +47,13 @@ public class ClientDetails implements Serializable {
         ClientDetails that = (ClientDetails) o;
 
         if (id != that.id) return false;
-        if (!Objects.equals(address, that.address)) return false;
-        if (!Objects.equals(registrationDate, that.registrationDate))
-            return false;
-        return Objects.equals(birthdayDate, that.birthdayDate);
+        return Objects.equals(clientDetailsInfo, that.clientDetailsInfo);
     }
 
     @Override
     public int hashCode() {
         int result = id;
-        result = 31 * result + (address != null ? address.hashCode() : 0);
-        result = 31 * result + (registrationDate != null ? registrationDate.hashCode() : 0);
-        result = 31 * result + (birthdayDate != null ? birthdayDate.hashCode() : 0);
+        result = 31 * result + (clientDetailsInfo != null ? clientDetailsInfo.hashCode() : 0);
         return result;
     }
 
@@ -89,9 +61,8 @@ public class ClientDetails implements Serializable {
     public String toString() {
         return "ClientDetails{" +
                 "id=" + id +
-                ", address='" + address + '\'' +
-                ", registrationDate=" + registrationDate +
-                ", birthdayDate=" + birthdayDate +
+                ", clientDetailsInfo=" + clientDetailsInfo +
                 '}';
     }
 }
+
