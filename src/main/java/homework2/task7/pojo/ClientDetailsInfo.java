@@ -5,8 +5,11 @@ import java.io.Serializable;
 import java.util.Date;
 @Embeddable
 public class ClientDetailsInfo implements Serializable {
+    @Column(name = "address")
     private String address;
+    @Column(name = "registration_date")
     private Date registrationDate;
+    @Column(name = "birthday_date")
     private Date birthdayDate;
 
     public ClientDetailsInfo() {

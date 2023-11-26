@@ -9,7 +9,9 @@ public class ClientInfo implements Serializable {
     @ManyToOne
     @JoinColumn(name = "expenses_id")
     private Expenses expenses;
+    @Column(name = "name")
     private String name;
+    @Column(name = "phone_number")
     private String phoneNumber;
 
     public Expenses getExpenses() {
