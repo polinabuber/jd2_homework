@@ -46,15 +46,18 @@ public class DaoImplTest {
         return client;
     }
 
-//    private static ClientDetails getClientDetails() {
-//        ClientDetails clientDetails = new ClientDetails();
-//        ClientDetailsInfo clientDetailsInfo = new ClientDetailsInfo();
-//        clientDetailsInfo.setAddress("Test Address");
-//        clientDetailsInfo.setRegistrationDate(convertStringToDate("2023-11-26"));
-//        clientDetailsInfo.setBirthdayDate(convertStringToDate("1980-01-01"));
-//        clientDetails.setClientDetailsInfo(clientDetailsInfo);
-//        return clientDetails;
-//    }
+    private static ClientDetails getClientsDetails() {
+        ClientDetails clientDetails = new ClientDetails();
+        ClientDetailsInfo clientDetailsInfo = new ClientDetailsInfo();
+        Client client = getClients();
+        int clientId = dao.addClient(client);
+        clientDetailsInfo.setAddress("Test Address");
+        clientDetailsInfo.setRegistrationDate(convertStringToDate("2023-01-01"));
+        clientDetailsInfo.setBirthdayDate(convertStringToDate("1990-07-15"));
+        clientDetails.setClientDetailsInfo(clientDetailsInfo);
+        clientDetails.setClient(client);
+        return clientDetails;
+    }
 
     private static void extracted(Expenses expenses, Expenses addedExpense) {
         assertEquals(expenses.getId(), addedExpense.getId());
@@ -99,15 +102,99 @@ public class DaoImplTest {
         try (Session session = TestSessionFactory.getSessionFactory().openSession()) {
             session.beginTransaction();
             session.createSQLQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate();
-            session.createSQLQuery("TRUNCATE TABLE expenses;").executeUpdate();
-            session.createSQLQuery("TRUNCATE TABLE receivers;").executeUpdate();
-            session.createSQLQuery("TRUNCATE TABLE clients;").executeUpdate();
-            session.createSQLQuery("TRUNCATE TABLE client_details;").executeUpdate();
+//            session.createSQLQuery("TRUNCATE TABLE expenses;").executeUpdate();
+//            session.createSQLQuery("TRUNCATE TABLE receivers;").executeUpdate();
+//            session.createSQLQuery("TRUNCATE TABLE clients;").executeUpdate();
+//            session.createSQLQuery("TRUNCATE TABLE client_details;").executeUpdate();
             session.createSQLQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate();
             session.getTransaction().commit();
         }
         dao = null;
     }
+
+    @Test
+    public void getClientDetailsTest() {
+        // Given
+        ClientDetails clientDetails1 = getClientsDetails();
+        int id1 = dao.addClientDetails(clientDetails1);
+        ClientDetails clientDetails2 = getClientsDetails();
+        int id2 = dao.addClientDetails(clientDetails2);
+
+        // When
+        ArrayList<ClientDetails> clientDetails = dao.getClientDetails();
+
+        // Then
+        assertNotNull(clientDetails);
+        assertTrue(clientDetails.size() >= 2);
+    }
+
+
+    @Test
+    public void getClientDetailsByIdTest() {
+        // Given
+        ClientDetails clientDetails = getClientsDetails();
+        int id = dao.addClientDetails(clientDetails);
+
+        // When
+        ClientDetails retrievedClientDetails = dao.getClientDetails(id);
+
+        // Then
+        assertNotNull(retrievedClientDetails);
+        assertEquals(clientDetails, retrievedClientDetails);
+        assertEquals(clientDetails.getClientDetailsInfo().getAddress(), retrievedClientDetails.getClientDetailsInfo().getAddress());
+        assertEquals(clientDetails.getClientDetailsInfo().getRegistrationDate(), retrievedClientDetails.getClientDetailsInfo().getRegistrationDate());
+        assertEquals(clientDetails.getClientDetailsInfo().getBirthdayDate(), retrievedClientDetails.getClientDetailsInfo().getBirthdayDate());
+    }
+
+    @Test
+    public void addClientDetailsTest() {
+        // Given
+        ClientDetails clientDetails = getClientsDetails();
+
+        // When
+        int id = dao.addClientDetails(clientDetails);
+
+        // Then
+        assertNotEquals(-1, id);
+        ClientDetails retrievedClientDetails = dao.getClientDetails(id);
+        assertNotNull(retrievedClientDetails);
+        assertEquals(clientDetails, retrievedClientDetails);
+    }
+
+    @Test
+    public void updateClientDetailsTest() {
+        // Given
+        ClientDetails clientDetails = getClientsDetails();
+        int id = dao.addClientDetails(clientDetails);
+        clientDetails = dao.getClientDetails(id);
+        clientDetails.getClientDetailsInfo().setAddress("New Address");
+
+        // When
+        dao.updateClientDetails(clientDetails);
+        ClientDetails updatedClientDetails = dao.getClientDetails(id);
+
+        // Then
+        assertNotNull(updatedClientDetails);
+        assertEquals("New Address", updatedClientDetails.getClientDetailsInfo().getAddress());
+        assertEquals(clientDetails.getClientDetailsInfo().getRegistrationDate(), updatedClientDetails.getClientDetailsInfo().getRegistrationDate());
+        assertEquals(clientDetails.getClientDetailsInfo().getBirthdayDate(), updatedClientDetails.getClientDetailsInfo().getBirthdayDate());
+    }
+
+    @Test
+    public void deleteClientDetailsTest() {
+        // Given
+        ClientDetails clientDetails = getClientsDetails();
+        int id = dao.addClientDetails(clientDetails);
+
+        // When
+        boolean isDeleted = dao.deleteClientDetails(clientDetails);
+
+        // Then
+        assertTrue(isDeleted);
+        ClientDetails retrievedClientDetails = dao.getClientDetails(id);
+        assertNull(retrievedClientDetails);
+    }
+
 
     @Test
     public void getClientsTest() {
@@ -190,7 +277,6 @@ public class DaoImplTest {
         assertTrue(isDeleted);
         assertNull(dao.getClient(id));
     }
-
 
 
     @Test
@@ -410,82 +496,6 @@ public class DaoImplTest {
         Receiver deletedReceiver = dao.getReceiver(receiver.getId());
         assertNull(deletedReceiver);
     }
-    //@Test
-//    public void getClientDetails() {
-//        // Given
-//        Client client = getClients();
-//        int clientId = dao.addClient(client);
-//
-//        ClientDetails clientDetails = createClientDetails();
-//        clientDetails.setId(clientId);
-//
-//        // When
-//        int clientDetailsId = dao.addClientDetails(clientDetails);
-//
-//        // Then
-//        assertNotEquals(-1, clientDetailsId);
-//        ClientDetails retrievedClientDetails = dao.getClientDetails(clientDetailsId);
-//        assertEquals(clientDetails, retrievedClientDetails);
-//
-//
-//    }
-//
-//    @Test
-//    public void getClientDetailsById() {
-//        // Given
-//        ClientDetails clientDetails = createClientDetails();
-//
-//        // When
-//        int id = dao.addClientDetails(clientDetails);
-//        ClientDetails retrievedClientDetails = dao.getClientDetails(id);
-//
-//        // Then
-//        assertEquals(clientDetails, retrievedClientDetails);
-//        assertEquals(id, retrievedClientDetails.getId());
-//    }
-//
-//    @Test
-//    public void addClientDetails() {
-//        // Given
-//        ClientDetails clientDetails = createClientDetails();
-//
-//        // When
-//        int id = dao.addClientDetails(clientDetails);
-//
-//        // Then
-//        assertNotEquals(-1, id);
-//        assertNotNull(dao.getClientDetails(id));
-//    }
-//
-//    @Test
-//    public void updateClientDetails() {
-//        // Given
-//        ClientDetails clientDetails = createClientDetails();
-//        int id = dao.addClientDetails(clientDetails);
-//        clientDetails.getClientDetailsInfo().setAddress("New Address");
-//
-//        // When
-//        dao.updateClientDetails(clientDetails);
-//        ClientDetails updatedClientDetails = dao.getClientDetails(id);
-//
-//        // Then
-//        assertEquals("New Address", updatedClientDetails.getClientDetailsInfo().getAddress());
-//        assertEquals(id, updatedClientDetails.getId());
-//    }
-//
-//    @Test
-//    public void deleteClientDetails() {
-//        // Given
-//        ClientDetails clientDetails = createClientDetails();
-//        int id = dao.addClientDetails(clientDetails);
-//
-//        // When
-//        boolean isDeleted = dao.deleteClientDetails(clientDetails);
-//
-//        // Then
-//        assertTrue(isDeleted);
-//        assertNull(dao.getClientDetails(id));
-//    }
 
 
 }
