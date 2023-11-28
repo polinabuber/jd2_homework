@@ -2,7 +2,8 @@ package homework2.task7.pojo;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+import java.util.*;
+
 @Embeddable
 public class ClientDetailsInfo implements Serializable {
     @Column(name = "address")
@@ -43,6 +44,27 @@ public class ClientDetailsInfo implements Serializable {
 
     public void setBirthdayDate(Date birthdayDate) {
         this.birthdayDate = birthdayDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ClientDetailsInfo that = (ClientDetailsInfo) o;
+
+        if (!Objects.equals(address, that.address)) return false;
+        if (!Objects.equals(registrationDate, that.registrationDate))
+            return false;
+        return Objects.equals(birthdayDate, that.birthdayDate);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = address != null ? address.hashCode() : 0;
+        result = 31 * result + (registrationDate != null ? registrationDate.hashCode() : 0);
+        result = 31 * result + (birthdayDate != null ? birthdayDate.hashCode() : 0);
+        return result;
     }
 }
 
