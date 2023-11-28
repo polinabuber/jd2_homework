@@ -19,6 +19,9 @@ public class Expenses implements Serializable {
     private Receiver receiver;
     @Column(name = "value")
     private double value;
+    @ManyToOne
+    @JoinColumn(name = "client_id", referencedColumnName = "id")
+    private Client client;
 
 
     public Expenses() {

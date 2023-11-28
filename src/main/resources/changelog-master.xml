@@ -175,6 +175,13 @@
             (5, '654 Elm Ln', '2020-11-07', '1984-05-05');
         </sql>
     </changeSet>
+    <changeSet id="15" author="buberpolina">
+        <sql>
+            ALTER TABLE expenses
+            ADD COLUMN client_id INT,
+            ADD FOREIGN KEY (client_id) REFERENCES clients(id);
+        </sql>
+    </changeSet>
 
 
 
