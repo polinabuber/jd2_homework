@@ -9,13 +9,24 @@ import java.util.*;
 public class ClientDetails implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
-    @Column(name = "id")
     private int id;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "client_id", referencedColumnName = "id")
+    private Client client;
 
     @Embedded
     private ClientDetailsInfo clientDetailsInfo;
 
     public ClientDetails() {
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public ClientDetails(int id, ClientDetailsInfo clientDetailsInfo) {
@@ -52,17 +63,11 @@ public class ClientDetails implements Serializable {
 
     @Override
     public int hashCode() {
+
         int result = id;
+        result = 31 * result + (client != null ? client.hashCode() : 0);
         result = 31 * result + (clientDetailsInfo != null ? clientDetailsInfo.hashCode() : 0);
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return "ClientDetails{" +
-                "id=" + id +
-                ", clientDetailsInfo=" + clientDetailsInfo +
-                '}';
     }
 }
 
