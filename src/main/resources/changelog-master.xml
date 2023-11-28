@@ -145,12 +145,13 @@
     <changeSet id="12" author="buberpolina">
         <sql>
             CREATE TABLE client_details (
-            id INT NOT NULL,
+            id INT NOT NULL AUTO_INCREMENT,
+            client_id INT NOT NULL,
             address VARCHAR(255) NOT NULL,
             registration_date DATE DEFAULT NULL,
             birthday_date DATE DEFAULT NULL,
             PRIMARY KEY (id),
-            FOREIGN KEY (id) REFERENCES clients(id)
+            FOREIGN KEY (client_id) REFERENCES clients(id)
             );
         </sql>
     </changeSet>
@@ -166,7 +167,7 @@
     </changeSet>
     <changeSet id="14" author="buberpolina">
         <sql>
-            INSERT INTO client_details (id, address, registration_date, birthday_date) VALUES
+            INSERT INTO client_details (client_id, address, registration_date, birthday_date) VALUES
             (1, '123 Main St', '2020-07-27', '1980-01-01'),
             (2, '456 Maple Ave', '2020-08-30', '1981-02-02'),
             (3, '789 Oak Dr', '2020-09-14', '1982-03-03'),
@@ -174,6 +175,7 @@
             (5, '654 Elm Ln', '2020-11-07', '1984-05-05');
         </sql>
     </changeSet>
+
 
 
 
