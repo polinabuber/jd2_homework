@@ -9,12 +9,18 @@
         <property name="hibernate.hbm2ddl.auto">update</property>
         <property name="hibernate.current_session_context_class">thread</property>
         <property name="hibernate.flushMode">COMMIT</property>
-        <mapping class = "homework2.task7.pojo.Expenses"/>
-        <mapping class = "homework2.task7.pojo.Receiver"/>
-        <mapping class = "homework2.task7.pojo.Client"/>
-        <mapping class = "homework2.task7.pojo.ClientInfo"/>
-        <mapping class = "homework2.task7.pojo.ClientDetails"/>
-        <mapping class = "homework2.task7.pojo.ClientDetailsInfo"/>
+        <mapping class = "homework2.task7.pojo.Expenses.Expenses"/>
+        <mapping class = "homework2.task7.pojo.Receiver.Receiver"/>
+        <mapping class = "homework2.task7.pojo.Client.Client"/>
+        <mapping class = "homework2.task7.pojo.Client.ClientInfo"/>
+        <mapping class = "homework2.task7.pojo.Client.ClientDetails"/>
+        <mapping class = "homework2.task7.pojo.Client.ClientDetailsInfo"/>
+        <mapping class = "homework2.task7.pojo.Bank.Bank"/>
+        <mapping class = "homework2.task7.pojo.Bank.Account"/>
+        <mapping class = "homework2.task7.pojo.Bank.BankDetails"/>
+        <mapping class = "homework2.task7.pojo.Product.Product"/>
+        <mapping class = "homework2.task7.pojo.Product.Investment"/>
+        <mapping class = "homework2.task7.pojo.Product.Loan"/>
 
 
     </session-factory>

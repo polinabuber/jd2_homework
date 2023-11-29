@@ -1,4 +1,7 @@
-package homework2.task7.pojo;
+package homework2.task7.pojo.Expenses;
+
+import homework2.task7.pojo.Client.*;
+import homework2.task7.pojo.Receiver.*;
 
 import javax.persistence.*;
 import java.io.*;

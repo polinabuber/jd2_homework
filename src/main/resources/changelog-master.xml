@@ -72,7 +72,7 @@
         </sql>
     </changeSet>
 
-                                                   <!-- task6-->
+    <!-- task6-->
 
     <changeSet id="6" author="buberpolina">
         <sql>
@@ -107,11 +107,12 @@
             JOIN (SELECT receiver, paydate, MAX(value) as max_payment, SUM(value) as total FROM expenses
             GROUP BY receiver, paydate) as daily_expenses ON receivers.id = daily_expenses.receiver
             WHERE daily_expenses.total = (SELECT total FROM (SELECT receiver, paydate, SUM(value) as total
-            FROM expenses WHERE receiver = receivers.id GROUP BY receiver, paydate ORDER BY total DESC LIMIT 1) as subquery)
+            FROM expenses WHERE receiver = receivers.id GROUP BY receiver, paydate ORDER BY total DESC LIMIT 1) as
+            subquery)
             GROUP BY receivers.name, daily_expenses.total;
         </sql>
     </changeSet>
-                                       <!-- end task6-->
+    <!-- end task6-->
 
     <changeSet id="9" author="buberpolina">
         <sql>
@@ -182,8 +183,44 @@
             ADD FOREIGN KEY (client_id) REFERENCES clients(id);
         </sql>
     </changeSet>
-
-
-
+    <changeSet id="16" author="buberpolina">
+        <sql>
+            CREATE TABLE bank (
+            id BIGINT AUTO_INCREMENT,
+            type VARCHAR(255),
+            bankName VARCHAR(255),
+            accountNumber VARCHAR(255),
+            PRIMARY KEY (id)
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="17" author="buberpolina">
+        <sql>
+            CREATE TABLE product (
+            id BIGINT AUTO_INCREMENT,
+            PRIMARY KEY (id)
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="18" author="buberpolina">
+        <sql>
+            CREATE TABLE loan (
+            id BIGINT AUTO_INCREMENT,
+            interestRate DOUBLE,
+            PRIMARY KEY (id),
+            FOREIGN KEY (id) REFERENCES product(id)
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="19" author="buberpolina">
+        <sql>
+            CREATE TABLE investment (
+            id BIGINT AUTO_INCREMENT,
+            returnRate DOUBLE,
+            PRIMARY KEY (id),
+            FOREIGN KEY (id) REFERENCES product(id)
+            );
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

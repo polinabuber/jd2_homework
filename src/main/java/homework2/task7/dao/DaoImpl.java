@@ -1,6 +1,10 @@
 package homework2.task7.dao;
 
-import homework2.task7.pojo.*;
+import homework2.task7.pojo.Bank.*;
+import homework2.task7.pojo.Client.*;
+import homework2.task7.pojo.Expenses.*;
+import homework2.task7.pojo.Product.*;
+import homework2.task7.pojo.Receiver.*;
 import org.hibernate.*;
 import org.hibernate.query.Query;
 
@@ -22,9 +26,11 @@ public class DaoImpl implements Dao {
         }
         this.sessionFactory = sessionFactory;
     }
+
     public Session getSession() {
         return this.sessionFactory.getCurrentSession();
     }
+
     public Serializable getIdentifier(Object entity) throws HibernateException {
         if (entity == null) {
             return null;
@@ -44,7 +50,6 @@ public class DaoImpl implements Dao {
         }
     }
 
-
     public void flushSession() {
         Transaction transaction = null;
         try (Session session = sessionFactory.getCurrentSession()) {
@@ -58,6 +63,7 @@ public class DaoImpl implements Dao {
             System.out.println("Error when flushing session: " + e.getMessage());
         }
     }
+
     public void clearSession() {
         Transaction transaction = null;
         try (Session session = sessionFactory.getCurrentSession()) {
@@ -71,6 +77,7 @@ public class DaoImpl implements Dao {
             System.out.println("Error when clearing session: " + e.getMessage());
         }
     }
+
     @Override
     public Expenses loadExpense(int num) {
         try (Session session = sessionFactory.openSession()) {
@@ -97,6 +104,60 @@ public class DaoImpl implements Dao {
     }
 
     @Override
+    public Product getProduct(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.get(Product.class, id);
+        }catch (HibernateException e) {
+            System.out.println("Error when getting product: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public Long addProduct(Product product) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            Long id = (Long) session.save(product);
+            transaction.commit();
+            return id;
+        } catch (RuntimeException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.out.println("Error when adding product:" + e.getMessage());
+            return -1L;
+        }
+    }
+
+    @Override
+    public Bank getBank(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.get(Bank.class, id);
+        }catch (HibernateException e) {
+            System.out.println("Error when getting bank: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public Long addBank(Bank bank) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            Long id = (Long) session.save(bank);
+            transaction.commit();
+            return id;
+        } catch (RuntimeException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.out.println("Error when adding bank:" + e.getMessage());
+            return -1L;
+        }
+    }
+
+    @Override
     public ArrayList<Expenses> getExpenses() {
         try (Session session = sessionFactory.openSession()) {
             Query<Expenses> query = session.createQuery(EXPENSES_ALL, Expenses.class);
@@ -116,6 +177,7 @@ public class DaoImpl implements Dao {
             return null;
         }
     }
+
     @Override
     public int addExpense(Expenses expenses) {
         Transaction transaction = null;
@@ -147,6 +209,7 @@ public class DaoImpl implements Dao {
             System.out.println("Error when updating expense: " + e.getMessage());
         }
     }
+
     @Override
     public boolean deleteExpense(Expenses expenses) {
         Transaction transaction = null;
@@ -163,6 +226,7 @@ public class DaoImpl implements Dao {
             return false;
         }
     }
+
     @Override
     public ArrayList<Receiver> getReceivers() {
         try (Session session = sessionFactory.openSession()) {
@@ -183,6 +247,7 @@ public class DaoImpl implements Dao {
             return null;
         }
     }
+
     @Override
     public int addReceiver(Receiver receiver) {
         Transaction transaction = null;
@@ -214,6 +279,7 @@ public class DaoImpl implements Dao {
             System.out.println("Error when updating receiver: " + e.getMessage());
         }
     }
+
     @Override
     public boolean deleteReceiver(Receiver receiver) {
         Transaction transaction = null;
@@ -230,6 +296,7 @@ public class DaoImpl implements Dao {
             return false;
         }
     }
+
     @Override
     public ArrayList<Client> getClients() {
         try (Session session = sessionFactory.openSession()) {
@@ -240,10 +307,14 @@ public class DaoImpl implements Dao {
             return null;
         }
     }
+
     @Override
     public Client getClient(int id) {
         try (Session session = sessionFactory.openSession()) {
             return session.get(Client.class, id);
+        }catch (HibernateException e) {
+            System.out.println("Error when getting clients: " + e.getMessage());
+            return null;
         }
     }
 
@@ -263,6 +334,7 @@ public class DaoImpl implements Dao {
             return -1;
         }
     }
+
     @Override
     public void updateClient(Client client) {
         Transaction transaction = null;
@@ -296,7 +368,6 @@ public class DaoImpl implements Dao {
     }
 
 
-
     @Override
     public ArrayList<ClientDetails> getClientDetails() {
         try (Session session = sessionFactory.openSession()) {
@@ -307,10 +378,14 @@ public class DaoImpl implements Dao {
             return null;
         }
     }
+
     @Override
     public ClientDetails getClientDetails(int id) {
         try (Session session = sessionFactory.openSession()) {
             return session.get(ClientDetails.class, id);
+        } catch (HibernateException e) {
+            System.out.println("Error when getting client details: " + e.getMessage());
+            return null;
         }
     }
 
@@ -330,6 +405,7 @@ public class DaoImpl implements Dao {
             return -1;
         }
     }
+
     @Override
     public void updateClientDetails(ClientDetails clientDetails) {
         Transaction transaction = null;

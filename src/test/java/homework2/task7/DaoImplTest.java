@@ -2,7 +2,11 @@ package homework2.task7;
 
 import homework2.*;
 import homework2.task7.dao.*;
-import homework2.task7.pojo.*;
+import homework2.task7.pojo.Bank.*;
+import homework2.task7.pojo.Client.*;
+import homework2.task7.pojo.Expenses.*;
+import homework2.task7.pojo.Product.*;
+import homework2.task7.pojo.Receiver.*;
 import org.hibernate.*;
 import org.junit.*;
 
@@ -14,14 +18,36 @@ import static org.junit.Assert.*;
 public class DaoImplTest {
     private static Dao dao;
 
-    private static Receiver getReceiver() {
+    private static Receiver createReceiver() {
         Receiver receiver = new Receiver();
         receiver.setName("Test Receiver");
         dao.addReceiver(receiver);
         return receiver;
     }
+    private BankDetails createBankDetails() {
+        BankDetails bankDetails = new BankDetails();
+        bankDetails.setBankName("Test Bank");
+        return bankDetails;
+    }
 
-    private static Expenses getExpenses(Receiver receiver, String date, double value) {
+    private Account createAccount() {
+        Account account = new Account();
+        account.setAccountNumber("1234567890");
+        return account;
+    }
+    private Loan createLoan() {
+        Loan loan = new Loan();
+        loan.setInterestRate(5.0);
+        return loan;
+    }
+
+    private Investment createInvestment() {
+        Investment investment = new Investment();
+        investment.setReturnRate(7.0);
+        return investment;
+    }
+
+    private static Expenses createExpense(Receiver receiver, String date, double value) {
         Expenses expenses = new Expenses();
         expenses.setPaydate(convertStringToDate(date));
         expenses.setReceiver(receiver);
@@ -29,12 +55,12 @@ public class DaoImplTest {
         return expenses;
     }
 
-    private static Client getClients() {
+    private static Client createClient() {
         Client client = new Client();
         ClientInfo clientInfo = new ClientInfo();
 
-        Receiver receiver = getReceiver();
-        Expenses expenses = getExpenses(receiver, "2023-11-26", 100.0);
+        Receiver receiver = createReceiver();
+        Expenses expenses = createExpense(receiver, "2023-11-26", 100.0);
 
         int expensesId = dao.addExpense(expenses);
         expenses = dao.getExpense(expensesId);
@@ -46,10 +72,10 @@ public class DaoImplTest {
         return client;
     }
 
-    private static ClientDetails getClientsDetails() {
+    private static ClientDetails createClientsDetails() {
         ClientDetails clientDetails = new ClientDetails();
         ClientDetailsInfo clientDetailsInfo = new ClientDetailsInfo();
-        Client client = getClients();
+        Client client = createClient();
         int clientId = dao.addClient(client);
         clientDetailsInfo.setAddress("Test Address");
         clientDetailsInfo.setRegistrationDate(convertStringToDate("2023-01-01"));
@@ -102,22 +128,126 @@ public class DaoImplTest {
         try (Session session = TestSessionFactory.getSessionFactory().openSession()) {
             session.beginTransaction();
             session.createSQLQuery("SET FOREIGN_KEY_CHECKS=0;").executeUpdate();
-//            session.createSQLQuery("TRUNCATE TABLE expenses;").executeUpdate();
-//            session.createSQLQuery("TRUNCATE TABLE receivers;").executeUpdate();
-//            session.createSQLQuery("TRUNCATE TABLE clients;").executeUpdate();
-//            session.createSQLQuery("TRUNCATE TABLE client_details;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE expenses;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE receivers;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE clients;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE client_details;").executeUpdate();
             session.createSQLQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate();
             session.getTransaction().commit();
         }
         dao = null;
     }
+    @Test
+    public void testAddLoan() {
+        // Given
+        Loan loan = createLoan();
+
+        // When
+        Long id = dao.addProduct(loan);
+
+        // Then
+        assertNotNull(id);
+        assertEquals(loan.getId(), id);
+    }
+
+    @Test
+    public void testGetLoan() {
+        // Given
+        Loan loan = createLoan();
+        Long id = dao.addProduct(loan);
+
+        // When
+        Product retrievedProduct = dao.getProduct(id);
+
+        // Then
+        assertNotNull(retrievedProduct);
+        assertEquals(loan.getId(), retrievedProduct.getId());
+    }
+
+    @Test
+    public void testAddInvestment() {
+        // Given
+        Investment investment = createInvestment();
+
+        // When
+        Long id = dao.addProduct(investment);
+
+        // Then
+        assertNotNull(id);
+        assertEquals(investment.getId(), id);
+    }
+
+    @Test
+    public void testGetInvestment() {
+        // Given
+        Investment investment = createInvestment();
+        Long id = dao.addProduct(investment);
+
+        // When
+        Product retrievedProduct = dao.getProduct(id);
+
+        // Then
+        assertNotNull(retrievedProduct);
+        assertEquals(investment.getId(), retrievedProduct.getId());
+    }
+    @Test
+    public void testAddBankDetails() {
+        // Given
+        BankDetails bankDetails = createBankDetails();
+
+        // When
+        long id = dao.addBank(bankDetails);
+
+        // Then
+        Assert.assertNotEquals(-1, id);
+    }
+
+    @Test
+    public void testGetBankDetails() {
+        // Given
+        BankDetails bankDetails = createBankDetails();
+        long id = dao.addBank(bankDetails);
+
+        // When
+        Bank retrievedBankDetails = dao.getBank(id);
+
+        // Then
+        Assert.assertNotNull(retrievedBankDetails);
+        Assert.assertEquals("Test Bank", ((BankDetails) retrievedBankDetails).getBankName());
+    }
+
+    @Test
+    public void testAddAccount() {
+        // Given
+        Account account = createAccount();
+
+        // When
+        long id = dao.addBank(account);
+
+        // Then
+        Assert.assertNotEquals(-1, id);
+    }
+
+    @Test
+    public void testGetAccount() {
+        // Given
+        Account account = createAccount();
+        long id = dao.addBank(account);
+
+        // When
+        Bank retrievedAccount = dao.getBank(id);
+
+        // Then
+        Assert.assertNotNull(retrievedAccount);
+        Assert.assertEquals("1234567890", ((Account) retrievedAccount).getAccountNumber());
+    }
 
     @Test
     public void getClientDetailsTest() {
         // Given
-        ClientDetails clientDetails1 = getClientsDetails();
+        ClientDetails clientDetails1 = createClientsDetails();
         int id1 = dao.addClientDetails(clientDetails1);
-        ClientDetails clientDetails2 = getClientsDetails();
+        ClientDetails clientDetails2 = createClientsDetails();
         int id2 = dao.addClientDetails(clientDetails2);
 
         // When
@@ -132,7 +262,7 @@ public class DaoImplTest {
     @Test
     public void getClientDetailsByIdTest() {
         // Given
-        ClientDetails clientDetails = getClientsDetails();
+        ClientDetails clientDetails = createClientsDetails();
         int id = dao.addClientDetails(clientDetails);
 
         // When
@@ -149,7 +279,7 @@ public class DaoImplTest {
     @Test
     public void addClientDetailsTest() {
         // Given
-        ClientDetails clientDetails = getClientsDetails();
+        ClientDetails clientDetails = createClientsDetails();
 
         // When
         int id = dao.addClientDetails(clientDetails);
@@ -164,7 +294,7 @@ public class DaoImplTest {
     @Test
     public void updateClientDetailsTest() {
         // Given
-        ClientDetails clientDetails = getClientsDetails();
+        ClientDetails clientDetails = createClientsDetails();
         int id = dao.addClientDetails(clientDetails);
         clientDetails = dao.getClientDetails(id);
         clientDetails.getClientDetailsInfo().setAddress("New Address");
@@ -183,7 +313,7 @@ public class DaoImplTest {
     @Test
     public void deleteClientDetailsTest() {
         // Given
-        ClientDetails clientDetails = getClientsDetails();
+        ClientDetails clientDetails = createClientsDetails();
         int id = dao.addClientDetails(clientDetails);
 
         // When
@@ -199,9 +329,9 @@ public class DaoImplTest {
     @Test
     public void getClientsTest() {
         // Given
-        Client client1 = getClients();
+        Client client1 = createClient();
         int id1 = dao.addClient(client1);
-        Client client2 = getClients();
+        Client client2 = createClient();
         int id2 = dao.addClient(client2);
 
         // When
@@ -215,7 +345,7 @@ public class DaoImplTest {
     @Test
     public void getClient() {
         // Given
-        Client client = getClients();
+        Client client = createClient();
         int id = dao.addClient(client);
 
         // When
@@ -233,7 +363,7 @@ public class DaoImplTest {
     @Test
     public void addClient() {
         // Given
-        Client client = getClients();
+        Client client = createClient();
 
         // When
         int id = dao.addClient(client);
@@ -248,7 +378,7 @@ public class DaoImplTest {
     @Test
     public void updateClient() {
         // Given
-        Client client = getClients();
+        Client client = createClient();
         int id = dao.addClient(client);
         client.getClientInfo().setName("New Name");
 
@@ -267,7 +397,7 @@ public class DaoImplTest {
     @Test
     public void deleteClient() {
         // Given
-        Client client = getClients();
+        Client client = createClient();
         int id = dao.addClient(client);
 
         // When
@@ -282,8 +412,8 @@ public class DaoImplTest {
     @Test
     public void testLoadExpense() {
         // Given
-        Receiver receiver = getReceiver();
-        Expenses expenses = getExpenses(receiver, "2022-07-27", 350);
+        Receiver receiver = createReceiver();
+        Expenses expenses = createExpense(receiver, "2022-07-27", 350);
         dao.addExpense(expenses);
 
         // When
@@ -307,7 +437,7 @@ public class DaoImplTest {
     @Test
     public void testLoadReceiver() {
         // Given
-        Receiver receiver = getReceiver();
+        Receiver receiver = createReceiver();
         dao.addReceiver(receiver);
 
         // When
@@ -329,8 +459,8 @@ public class DaoImplTest {
     @Test
     public void testGetExpenses() {
         // Given
-        Receiver receiver = getReceiver();
-        Expenses expenses = getExpenses(receiver, "2021-07-27", 250);
+        Receiver receiver = createReceiver();
+        Expenses expenses = createExpense(receiver, "2021-07-27", 250);
         dao.addExpense(expenses);
 
         // When
@@ -350,8 +480,8 @@ public class DaoImplTest {
     @Test
     public void testGetExpense() {
         // Given
-        Receiver receiver = getReceiver();
-        Expenses expenses = getExpenses(receiver, "2022-07-27", 350);
+        Receiver receiver = createReceiver();
+        Expenses expenses = createExpense(receiver, "2022-07-27", 350);
 
         // When
         int result = dao.addExpense(expenses);
@@ -367,8 +497,8 @@ public class DaoImplTest {
     @Test
     public void testAddExpense() {
         // Given
-        Receiver receiver = getReceiver();
-        Expenses expenses = getExpenses(receiver, "2022-07-27", 350);
+        Receiver receiver = createReceiver();
+        Expenses expenses = createExpense(receiver, "2022-07-27", 350);
 
         // When
         int result = dao.addExpense(expenses);
@@ -383,8 +513,8 @@ public class DaoImplTest {
     @Test
     public void testUpdateExpense() {
         // Given
-        Receiver receiver = getReceiver();
-        Expenses expenses = getExpenses(receiver, "2022-07-27", 350);
+        Receiver receiver = createReceiver();
+        Expenses expenses = createExpense(receiver, "2022-07-27", 350);
         dao.addExpense(expenses);
 
         // When
@@ -404,8 +534,8 @@ public class DaoImplTest {
     @Test
     public void testDeleteExpense() {
         // Given
-        Receiver receiver = getReceiver();
-        Expenses expenses = getExpenses(receiver, "2022-07-27", 350);
+        Receiver receiver = createReceiver();
+        Expenses expenses = createExpense(receiver, "2022-07-27", 350);
         dao.addExpense(expenses);
 
         // When
@@ -420,7 +550,7 @@ public class DaoImplTest {
     @Test
     public void testGetReceivers() {
         // Given
-        Receiver receiver = getReceiver();
+        Receiver receiver = createReceiver();
 
         // When
         ArrayList<Receiver> receivers = dao.getReceivers();
@@ -433,7 +563,7 @@ public class DaoImplTest {
     @Test
     public void testGetReceiver() {
         // Given
-        Receiver receiver = getReceiver();
+        Receiver receiver = createReceiver();
         int id = dao.addReceiver(receiver);
 
         // When
@@ -467,7 +597,7 @@ public class DaoImplTest {
     @Test
     public void testUpdateReceiver() {
         // Given
-        Receiver receiver = getReceiver();
+        Receiver receiver = createReceiver();
 
         // When
         receiver.setName("Updated Receiver");
@@ -486,7 +616,7 @@ public class DaoImplTest {
     @Test
     public void testDeleteReceiver() {
         // Given
-        Receiver receiver = getReceiver();
+        Receiver receiver = createReceiver();
 
         // When
         boolean isDeleted = dao.deleteReceiver(receiver);

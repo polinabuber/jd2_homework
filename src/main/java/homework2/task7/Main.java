@@ -1,7 +1,7 @@
 package homework2.task7;
 
 import homework2.task7.dao.*;
-import homework2.task7.pojo.*;
+import homework2.task7.pojo.Client.*;
 
 import java.io.*;
 import java.text.*;
