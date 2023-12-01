@@ -1,17 +1,47 @@
 package homework2.task7.dao;
 
-import homework2.task7.pojo.Bank.*;
+import homework2.task7.pojo.BankSingleTable.*;
 import homework2.task7.pojo.Client.*;
 import homework2.task7.pojo.Expenses.*;
-import homework2.task7.pojo.Product.*;
+import homework2.task7.pojo.ProductJoined.*;
 import homework2.task7.pojo.Receiver.*;
+import homework2.task7.pojo.TransactionPerClass.*;
 
 import java.util.*;
 
 public interface Dao {
+    Transactions getTransactions(Long id);
+
+    Long addTransaction(Transactions transactions);
+
+    BankTransactions getBankTransaction(Long id);
+
+    Long addBankTransaction(BankTransactions bankTransaction);
+
+    CardTransactions getCardTransaction(Long id);
+
+    Long addCardTransaction(CardTransactions cardTransaction);
+
     Product getProduct(Long id);
 
     Long addProduct(Product product);
+
+    Investment getInvestment(Long id);
+
+    Long addInvestment(Investment investment);
+
+    Loan getLoan(Long id);
+
+    Long addLoan(Loan loan);
+
+
+    BankDetails getBankDetails(Long id);
+
+    Long addBankDetails(BankDetails bankDetails);
+
+    Account getAccount(Long id);
+
+    Long addAccount(Account account);
 
     Bank getBank(Long id);
 

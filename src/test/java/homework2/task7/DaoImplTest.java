@@ -2,11 +2,12 @@ package homework2.task7;
 
 import homework2.*;
 import homework2.task7.dao.*;
-import homework2.task7.pojo.Bank.*;
+import homework2.task7.pojo.BankSingleTable.*;
 import homework2.task7.pojo.Client.*;
 import homework2.task7.pojo.Expenses.*;
-import homework2.task7.pojo.Product.*;
+import homework2.task7.pojo.ProductJoined.*;
 import homework2.task7.pojo.Receiver.*;
+import homework2.task7.pojo.TransactionPerClass.*;
 import org.hibernate.*;
 import org.junit.*;
 
@@ -24,17 +25,35 @@ public class DaoImplTest {
         dao.addReceiver(receiver);
         return receiver;
     }
+
     private BankDetails createBankDetails() {
         BankDetails bankDetails = new BankDetails();
         bankDetails.setBankName("Test Bank");
         return bankDetails;
     }
 
+    private BankTransactions createBankTransaction() {
+        BankTransactions bankTransaction = new BankTransactions();
+        bankTransaction.setAmount(100.0);
+        bankTransaction.setBankName("JPMorgan Chase");
+        bankTransaction.setAccountNumber("101010");
+        return bankTransaction;
+    }
+
+    private CardTransactions createCardTransaction() {
+        CardTransactions cardTransaction = new CardTransactions();
+        cardTransaction.setCardNumber("1234567890");
+        cardTransaction.setCardHolderName("John Wick");
+        return cardTransaction;
+    }
+
+
     private Account createAccount() {
         Account account = new Account();
         account.setAccountNumber("1234567890");
         return account;
     }
+
     private Loan createLoan() {
         Loan loan = new Loan();
         loan.setInterestRate(5.0);
@@ -118,6 +137,13 @@ public class DaoImplTest {
             session.createSQLQuery("TRUNCATE TABLE receivers;").executeUpdate();
             session.createSQLQuery("TRUNCATE TABLE clients;").executeUpdate();
             session.createSQLQuery("TRUNCATE TABLE client_details;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE product;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE bank;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE loan;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE investment;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE transaction ;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE bank_transaction;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE card_transaction;").executeUpdate();
             session.createSQLQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate();
             session.getTransaction().commit();
         }
@@ -132,18 +158,142 @@ public class DaoImplTest {
             session.createSQLQuery("TRUNCATE TABLE receivers;").executeUpdate();
             session.createSQLQuery("TRUNCATE TABLE clients;").executeUpdate();
             session.createSQLQuery("TRUNCATE TABLE client_details;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE product;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE bank;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE loan;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE investment;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE transaction ;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE bank_transaction;").executeUpdate();
+            session.createSQLQuery("TRUNCATE TABLE card_transaction;").executeUpdate();
             session.createSQLQuery("SET FOREIGN_KEY_CHECKS=1;").executeUpdate();
             session.getTransaction().commit();
         }
         dao = null;
     }
     @Test
+    public void testAddTransaction() {
+        // Given
+        Transactions transactions = new Transactions();
+
+        // When
+        Long id = dao.addTransaction(transactions);
+
+        // Then
+        assertNotNull(id);
+        assertEquals(transactions.getId(), id);
+    }
+
+    @Test
+    public void testGetTransaction() {
+        // Given
+        Transactions transactions = new Transactions();
+        Long id = dao.addTransaction(transactions);
+
+        // When
+        Transactions retrievedTransaction = dao.getTransactions(id);
+
+        // Then
+        assertNotNull(retrievedTransaction);
+        assertEquals(transactions.getId(), retrievedTransaction.getId());
+    }
+
+    @Test
+    public void testAddBankTransaction() {
+        // Given
+        BankTransactions bankTransaction = createBankTransaction();
+
+        // When
+        Long id = dao.addBankTransaction(bankTransaction);
+
+        // Then
+        assertNotNull(id);
+        assertEquals(bankTransaction.getId(), id);
+        assertNotNull(bankTransaction.getBankName());
+        assertFalse(bankTransaction.getBankName().isEmpty());
+    }
+
+    @Test
+    public void testGetBankTransaction() {
+        // Given
+        BankTransactions bankTransaction = createBankTransaction();
+        Long id = dao.addBankTransaction(bankTransaction);
+
+        // When
+        BankTransactions retrievedBankTransaction = dao.getBankTransaction(id);
+
+        // Then
+        assertNotNull(retrievedBankTransaction);
+        assertEquals(bankTransaction.getId(), retrievedBankTransaction.getId());
+        assertEquals(bankTransaction.getBankName(), retrievedBankTransaction.getBankName());
+    }
+
+    @Test
+    public void testAddCardTransaction() {
+        // Given
+        CardTransactions cardTransaction = createCardTransaction();
+
+        // When
+        Long id = dao.addCardTransaction(cardTransaction);
+
+        // Then
+        assertNotNull(id);
+        assertEquals(cardTransaction.getId(), id);
+        assertNotNull(cardTransaction.getCardHolderName());
+        assertFalse(cardTransaction.getCardHolderName().isEmpty());
+    }
+
+    @Test
+    public void testGetCardTransaction() {
+        // Given
+        CardTransactions cardTransaction = createCardTransaction();
+        Long id = dao.addCardTransaction(cardTransaction);
+
+        // When
+        CardTransactions retrievedCardTransaction = dao.getCardTransaction(id);
+
+        // Then
+        assertNotNull(retrievedCardTransaction);
+        assertEquals(cardTransaction.getId(), retrievedCardTransaction.getId());
+        assertEquals(cardTransaction.getCardHolderName(), retrievedCardTransaction.getCardHolderName());
+    }
+
+
+
+    @Test
+    public void testAddProduct() {
+        // Given
+        Product product = new Product();
+
+        // When
+        Long id = dao.addProduct(product);
+
+        // Then
+        assertNotNull(id);
+        assertEquals(product.getId(), id);
+    }
+
+    @Test
+    public void testGetProduct() {
+        // Given
+        Product product = new Product();
+        Long id = dao.addProduct(product);
+
+        // When
+        Product retrievedProduct = dao.getProduct(id);
+
+        // Then
+        assertNotNull(retrievedProduct);
+        assertEquals(product.getId(), retrievedProduct.getId());
+    }
+
+
+    @Test
     public void testAddLoan() {
         // Given
         Loan loan = createLoan();
 
         // When
-        Long id = dao.addProduct(loan);
+        Long id = dao.addLoan(loan);
 
         // Then
         assertNotNull(id);
@@ -154,14 +304,14 @@ public class DaoImplTest {
     public void testGetLoan() {
         // Given
         Loan loan = createLoan();
-        Long id = dao.addProduct(loan);
+        Long id = dao.addLoan(loan);
 
         // When
-        Product retrievedProduct = dao.getProduct(id);
+        Loan retrievedLoan = dao.getLoan(id);
 
         // Then
-        assertNotNull(retrievedProduct);
-        assertEquals(loan.getId(), retrievedProduct.getId());
+        assertNotNull(retrievedLoan);
+        assertEquals(loan.getId(), retrievedLoan.getId());
     }
 
     @Test
@@ -170,7 +320,7 @@ public class DaoImplTest {
         Investment investment = createInvestment();
 
         // When
-        Long id = dao.addProduct(investment);
+        Long id = dao.addInvestment(investment);
 
         // Then
         assertNotNull(id);
@@ -181,22 +331,48 @@ public class DaoImplTest {
     public void testGetInvestment() {
         // Given
         Investment investment = createInvestment();
-        Long id = dao.addProduct(investment);
+        Long id = dao.addInvestment(investment);
 
         // When
-        Product retrievedProduct = dao.getProduct(id);
+        Investment retrievedInvestment = dao.getInvestment(id);
 
         // Then
-        assertNotNull(retrievedProduct);
-        assertEquals(investment.getId(), retrievedProduct.getId());
+        assertNotNull(retrievedInvestment);
+        assertEquals(investment.getId(), retrievedInvestment.getId());
     }
+
+    @Test
+    public void testAddBank() {
+        // Given
+        Bank bank = new Bank();
+
+        // When
+        long id = dao.addBank(bank);
+
+        // Then
+        Assert.assertNotEquals(-1, id);
+    }
+
+    @Test
+    public void testGetBank() {
+        // Given
+        Bank bank = new Bank();
+        long id = dao.addBank(bank);
+
+        // When
+        Bank retrievedBank = dao.getBank(id);
+
+        // Then
+        Assert.assertNotNull(retrievedBank);
+    }
+
     @Test
     public void testAddBankDetails() {
         // Given
         BankDetails bankDetails = createBankDetails();
 
         // When
-        long id = dao.addBank(bankDetails);
+        long id = dao.addBankDetails(bankDetails);
 
         // Then
         Assert.assertNotEquals(-1, id);
@@ -206,14 +382,14 @@ public class DaoImplTest {
     public void testGetBankDetails() {
         // Given
         BankDetails bankDetails = createBankDetails();
-        long id = dao.addBank(bankDetails);
+        long id = dao.addBankDetails(bankDetails);
 
         // When
-        Bank retrievedBankDetails = dao.getBank(id);
+        BankDetails retrievedBankDetails = dao.getBankDetails(id);
 
         // Then
         Assert.assertNotNull(retrievedBankDetails);
-        Assert.assertEquals("Test Bank", ((BankDetails) retrievedBankDetails).getBankName());
+        Assert.assertEquals("Test Bank", retrievedBankDetails.getBankName());
     }
 
     @Test
@@ -222,7 +398,7 @@ public class DaoImplTest {
         Account account = createAccount();
 
         // When
-        long id = dao.addBank(account);
+        long id = dao.addAccount(account);
 
         // Then
         Assert.assertNotEquals(-1, id);
@@ -232,15 +408,16 @@ public class DaoImplTest {
     public void testGetAccount() {
         // Given
         Account account = createAccount();
-        long id = dao.addBank(account);
+        long id = dao.addAccount(account);
 
         // When
-        Bank retrievedAccount = dao.getBank(id);
+        Account retrievedAccount = dao.getAccount(id);
 
         // Then
         Assert.assertNotNull(retrievedAccount);
-        Assert.assertEquals("1234567890", ((Account) retrievedAccount).getAccountNumber());
+        Assert.assertEquals("1234567890", retrievedAccount.getAccountNumber());
     }
+
 
     @Test
     public void getClientDetailsTest() {

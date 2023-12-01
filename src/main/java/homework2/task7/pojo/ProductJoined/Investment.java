@@ -1,17 +1,17 @@
-package homework2.task7.pojo.Product;
+package homework2.task7.pojo.ProductJoined;
 
 import javax.persistence.*;
 
 @Entity
-public class Loan extends Product {
-    private double interestRate;
+public class Investment extends Product {
+    private double returnRate;
 
-    public double getInterestRate() {
-        return interestRate;
+    public double getReturnRate() {
+        return returnRate;
     }
 
-    public void setInterestRate(double interestRate) {
-        this.interestRate = interestRate;
+    public void setReturnRate(double returnRate) {
+        this.returnRate = returnRate;
     }
 
     @Override
@@ -20,16 +20,16 @@ public class Loan extends Product {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        Loan loan = (Loan) o;
+        Investment that = (Investment) o;
 
-        return Double.compare(loan.interestRate, interestRate) == 0;
+        return Double.compare(that.returnRate, returnRate) == 0;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         long temp;
-        temp = Double.doubleToLongBits(interestRate);
+        temp = Double.doubleToLongBits(returnRate);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
     }

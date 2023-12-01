@@ -1,4 +1,4 @@
-package homework2.task7.pojo.Bank;
+package homework2.task7.pojo.BankSingleTable;
 
 import javax.persistence.*;
 import java.util.*;

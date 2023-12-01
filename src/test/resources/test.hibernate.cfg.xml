@@ -15,12 +15,17 @@
         <mapping class = "homework2.task7.pojo.Client.ClientInfo"/>
         <mapping class = "homework2.task7.pojo.Client.ClientDetails"/>
         <mapping class = "homework2.task7.pojo.Client.ClientDetailsInfo"/>
-        <mapping class = "homework2.task7.pojo.Bank.Bank"/>
-        <mapping class = "homework2.task7.pojo.Bank.Account"/>
-        <mapping class = "homework2.task7.pojo.Bank.BankDetails"/>
-        <mapping class = "homework2.task7.pojo.Product.Product"/>
-        <mapping class = "homework2.task7.pojo.Product.Investment"/>
-        <mapping class = "homework2.task7.pojo.Product.Loan"/>
+        <mapping class = "homework2.task7.pojo.BankSingleTable.Bank"/>
+        <mapping class = "homework2.task7.pojo.BankSingleTable.Account"/>
+        <mapping class = "homework2.task7.pojo.BankSingleTable.BankDetails"/>
+        <mapping class = "homework2.task7.pojo.ProductJoined.Product"/>
+        <mapping class = "homework2.task7.pojo.ProductJoined.Investment"/>
+        <mapping class = "homework2.task7.pojo.ProductJoined.Loan"/>
+        <mapping class = "homework2.task7.pojo.TransactionPerClass.Transactions"/>
+        <mapping class = "homework2.task7.pojo.TransactionPerClass.BankTransactions"/>
+        <mapping class = "homework2.task7.pojo.TransactionPerClass.CardTransactions"/>
+
+
 
 
     </session-factory>

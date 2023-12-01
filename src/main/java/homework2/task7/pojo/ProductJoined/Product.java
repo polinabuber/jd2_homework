@@ -1,12 +1,11 @@
-package homework2.task7.pojo.Bank;
+package homework2.task7.pojo.ProductJoined;
 
 import javax.persistence.*;
 import java.util.*;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "type")
-public class Bank {
+@Inheritance(strategy = InheritanceType.JOINED)
+public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,12 +20,13 @@ public class Bank {
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Bank bank = (Bank) o;
+        Product product = (Product) o;
 
-        return Objects.equals(id, bank.id);
+        return Objects.equals(id, product.id);
     }
 
     @Override

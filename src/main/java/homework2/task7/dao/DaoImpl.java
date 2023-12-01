@@ -1,11 +1,13 @@
 package homework2.task7.dao;
 
-import homework2.task7.pojo.Bank.*;
+import homework2.task7.pojo.BankSingleTable.*;
 import homework2.task7.pojo.Client.*;
 import homework2.task7.pojo.Expenses.*;
-import homework2.task7.pojo.Product.*;
+import homework2.task7.pojo.ProductJoined.*;
 import homework2.task7.pojo.Receiver.*;
+import homework2.task7.pojo.TransactionPerClass.*;
 import org.hibernate.*;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
 import java.io.*;
@@ -103,6 +105,88 @@ public class DaoImpl implements Dao {
         }
     }
 
+
+    @Override
+    public Transactions getTransactions(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.get(Transactions.class, id);
+        } catch (HibernateException e) {
+            System.out.println("Error when getting transaction: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public Long addTransaction(Transactions transactions) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            Long id = (Long) session.save(transactions);
+            transaction.commit();
+            return id;
+        } catch (RuntimeException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.out.println("Error when adding transaction:" + e.getMessage());
+            return -1L;
+        }
+    }
+
+    @Override
+    public BankTransactions getBankTransaction(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.get(BankTransactions.class, id);
+        } catch (HibernateException e) {
+            System.out.println("Error when getting bank transaction: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public Long addBankTransaction(BankTransactions bankTransaction) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            Long id = (Long) session.save(bankTransaction);
+            transaction.commit();
+            return id;
+        } catch (RuntimeException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.out.println("Error when adding bank transaction:" + e.getMessage());
+            return -1L;
+        }
+    }
+
+    @Override
+    public CardTransactions getCardTransaction(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.get(CardTransactions.class, id);
+        } catch (HibernateException e) {
+            System.out.println("Error when getting card transaction: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public Long addCardTransaction(CardTransactions cardTransaction) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            Long id = (Long) session.save(cardTransaction);
+            transaction.commit();
+            return id;
+        } catch (RuntimeException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.out.println("Error when adding card transaction:" + e.getMessage());
+            return -1L;
+        }
+    }
+
     @Override
     public Product getProduct(Long id) {
         try (Session session = sessionFactory.openSession()) {
@@ -129,6 +213,60 @@ public class DaoImpl implements Dao {
             return -1L;
         }
     }
+    @Override
+    public Investment getInvestment(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.get(Investment.class, id);
+        } catch (HibernateException e) {
+            System.out.println("Error when getting investment: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public Long addInvestment(Investment investment) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            Long id = (Long) session.save(investment);
+            transaction.commit();
+            return id;
+        } catch (RuntimeException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.out.println("Error when adding investment:" + e.getMessage());
+            return -1L;
+        }
+    }
+
+    @Override
+    public Loan getLoan(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.get(Loan.class, id);
+        } catch (HibernateException e) {
+            System.out.println("Error when getting loan: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public Long addLoan(Loan loan) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            Long id = (Long) session.save(loan);
+            transaction.commit();
+            return id;
+        } catch (RuntimeException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.out.println("Error when adding loan:" + e.getMessage());
+            return -1L;
+        }
+    }
+
 
     @Override
     public Bank getBank(Long id) {
@@ -156,6 +294,60 @@ public class DaoImpl implements Dao {
             return -1L;
         }
     }
+    @Override
+    public BankDetails getBankDetails(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.get(BankDetails.class, id);
+        } catch (HibernateException e) {
+            System.out.println("Error when getting bank details: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public Long addBankDetails(BankDetails bankDetails) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            Long id = (Long) session.save(bankDetails);
+            transaction.commit();
+            return id;
+        } catch (RuntimeException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.out.println("Error when adding bank details:" + e.getMessage());
+            return -1L;
+        }
+    }
+
+    @Override
+    public Account getAccount(Long id) {
+        try (Session session = sessionFactory.openSession()) {
+            return session.get(Account.class, id);
+        } catch (HibernateException e) {
+            System.out.println("Error when getting account: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public Long addAccount(Account account) {
+        Transaction transaction = null;
+        try (Session session = sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            Long id = (Long) session.save(account);
+            transaction.commit();
+            return id;
+        } catch (RuntimeException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            System.out.println("Error when adding account:" + e.getMessage());
+            return -1L;
+        }
+    }
+
 
     @Override
     public ArrayList<Expenses> getExpenses() {
