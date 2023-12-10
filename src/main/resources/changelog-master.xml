@@ -251,6 +251,25 @@
             );
         </sql>
     </changeSet>
+    <changeSet id="23" author="buberpolina">
+        <sql>
+            CREATE TABLE user (
+            id INT AUTO_INCREMENT,
+            firstName VARCHAR(255),
+            lastName VARCHAR(255),
+            PRIMARY KEY (id)
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="24" author="buberpolina">
+        <sql>
+            INSERT INTO user (id, firstName, lastName) VALUES
+            (1, 'John', 'Doe'),
+            (2, 'Jane', 'Smith'),
+            (3, 'Bob', 'Johnson');
+        </sql>
+    </changeSet>
+
 
 
 </databaseChangeLog>
