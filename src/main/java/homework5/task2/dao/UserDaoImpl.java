@@ -8,6 +8,8 @@ import java.sql.*;
 
 @Repository
 public class UserDaoImpl implements UserDao {
+
+
     @Override
     public User getUserById(String id) {
         User user = null;
@@ -30,14 +32,13 @@ public class UserDaoImpl implements UserDao {
     }
 
 
-
-//TODO
     public void initMethod() {
-        System.out.println("call init");
+        System.out.println("call init in UserDaoImpl");
     }
 
     public void destroyMethod() {
-        System.out.println("call destroy");
+        System.out.println("call destroy in UserDaoImpl");
     }
+
 }
 

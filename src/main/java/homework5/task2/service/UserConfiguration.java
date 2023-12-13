@@ -5,9 +5,9 @@ import org.springframework.context.annotation.*;
 @Configuration
 
 public class UserConfiguration {
-    @Bean
+    @Bean(initMethod = "initMethod", destroyMethod = "destroyMethod")
     public UserDao userDao() {
-        return createUserDao();
+        return new UserDaoImpl();
     }
 
     @Bean
@@ -15,13 +15,8 @@ public class UserConfiguration {
         return new UserDto(userDao);
     }
 
-
-
-
-    //TODO
-    public UserDao createUserDao() {
+    public static UserDao createUserDao() {
         UserDaoImpl userDao = new UserDaoImpl();
-        userDao.initMethod();
         return userDao;
     }
 

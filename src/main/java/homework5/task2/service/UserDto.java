@@ -26,12 +26,12 @@ public class UserDto implements InitializingBean, DisposableBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        System.out.println("call afterPropertiesSet");
+        System.out.println("call afterPropertiesSet in UserDto");
     }
 
     @Override
     public void destroy() throws Exception {
-        System.out.println("call destroy");
+        System.out.println("call destroy in UserDto");
     }
 
 }

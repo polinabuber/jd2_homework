@@ -6,21 +6,20 @@ import org.junit.*;
 import org.junit.runner.*;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.*;
+import org.springframework.context.*;
+import org.springframework.context.support.*;
 import org.springframework.test.context.*;
 import org.springframework.test.context.junit4.*;
-
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestUserConfiguration.class)
 public class UserTest {
     @Autowired
     private UserDao userDao;
+    @Autowired
     private UserDto userDto;
-
-    @Before
-    public void setUp() {
-        userDto = new UserDto(userDao);
-    }
 
     @Test
     public void testGetUserById() {
@@ -39,5 +38,18 @@ public class UserTest {
         assertEquals(user, result);
 
         System.out.println("User name: " + result.getFirstName() + " " + result.getLastName());
+    }
+    @Test
+    public void testBeansConfiguration() {
+        // Given
+        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        // When
+        UserDao userDao = context.getBean(UserDao.class);
+        UserDto userDto = context.getBean(UserDto.class);
+
+        // Then
+        assertNotNull(userDao);
+        assertNotNull(userDto);
+        assertEquals(userDao, userDto.getUserDao());
     }
 }
