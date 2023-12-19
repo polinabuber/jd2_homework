@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.*;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestUserConfiguration.class)
@@ -30,6 +31,10 @@ public class UserTest {
         user.setFirstName("Test");
         user.setLastName("User");
         return user;
+    }
+    private static ApplicationContext getApplicationContext() {
+        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        return context;
     }
     @Before
     public void setUp() {
@@ -54,7 +59,7 @@ public class UserTest {
     @Test
     public void testBeansConfiguration() {
         // Given
-        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        ApplicationContext context = getApplicationContext();
         // When
         UserDao userDao = context.getBean(UserDao.class);
         UserDto userDto = context.getBean(UserDto.class);
@@ -64,6 +69,7 @@ public class UserTest {
         assertNotNull(userDto);
         assertEquals(userDao, userDto.getUserDao());
     }
+
 
     @Test
     public void testGetUserNameLengthById() {
@@ -78,7 +84,6 @@ public class UserTest {
         Mockito.verify(userDao, Mockito.times(1)).getUserById("1");
         assertEquals((user.getFirstName() + user.getLastName()).length(), result);
 
-        // Output the length to the console
         System.out.println("Length of the full name without spaces: " + result);
     }
     @Test
@@ -112,6 +117,22 @@ public class UserTest {
 
         System.out.println("User name: " + result.getFirstName() + " " + result.getLastName());
     }
+    @Test
+    public void testUserDaoQualifier() {
+        // Given
+        ApplicationContext context = getApplicationContext();
+
+        // When
+        UserDao userDaoImpl = (UserDao) context.getBean("userDaoImpl");
+        UserDao userDaoImpl1 = (UserDao) context.getBean("userDaoImpl1");
+        UserDao userDaoImpl2 = (UserDao) context.getBean("userDaoImpl2");
+
+        // Then
+        assertTrue(userDaoImpl instanceof UserDaoImpl);
+        assertTrue(userDaoImpl1 instanceof UserDaoImpl1);
+        assertTrue(userDaoImpl2 instanceof UserDaoImpl2);
+    }
+
 
 
 

@@ -7,6 +7,7 @@ import org.springframework.context.annotation.*;
 @Configuration
 public class TestUserConfiguration {
     @Bean
+    @Primary
     public UserDao userDao() {
         return Mockito.mock(UserDao.class);
     }
