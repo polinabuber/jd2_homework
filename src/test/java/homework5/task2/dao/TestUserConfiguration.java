@@ -15,4 +15,8 @@ public class TestUserConfiguration {
     public UserDto userDto(UserDao userDao) {
         return new UserDto(userDao);
     }
+    @Bean
+    public NewBean newBean() {
+        return new NewBean(userDao());
+    }
 }

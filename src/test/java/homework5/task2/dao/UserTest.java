@@ -10,6 +10,7 @@ import org.springframework.context.*;
 import org.springframework.context.support.*;
 import org.springframework.test.context.*;
 import org.springframework.test.context.junit4.*;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
@@ -20,14 +21,21 @@ public class UserTest {
     private UserDao userDao;
     @Autowired
     private UserDto userDto;
+    @Autowired
+    private NewBean newBean;
 
-    @Test
-    public void testGetUserById() {
-        // Given
+    private static User getUser() {
         User user = new User();
         user.setId("1");
         user.setFirstName("Test");
         user.setLastName("User");
+        return user;
+    }
+
+    @Test
+    public void testGetUserById() {
+        // Given
+        User user = getUser();
         Mockito.when(userDao.getUserById("1")).thenReturn(user);
 
         // When
@@ -39,6 +47,7 @@ public class UserTest {
 
         System.out.println("User name: " + result.getFirstName() + " " + result.getLastName());
     }
+
     @Test
     public void testBeansConfiguration() {
         // Given
@@ -51,5 +60,20 @@ public class UserTest {
         assertNotNull(userDao);
         assertNotNull(userDto);
         assertEquals(userDao, userDto.getUserDao());
+    }
+
+    @Test
+    public void testGetUserFullNameById() {
+        // Given
+        User user = getUser();
+        Mockito.when(userDao.getUserById("1")).thenReturn(user);
+
+        // When
+        String result = newBean.getUserFullNameById("1");
+
+        // Then
+        Mockito.verify(userDao, Mockito.times(1)).getUserById("1");
+        assertEquals("Test User", result);
+
     }
 }
