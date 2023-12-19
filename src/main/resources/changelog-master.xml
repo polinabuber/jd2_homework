@@ -269,7 +269,4 @@
             (3, 'Bob', 'Johnson');
         </sql>
     </changeSet>
-
-
-
 </databaseChangeLog>

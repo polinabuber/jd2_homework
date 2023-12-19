@@ -12,8 +12,9 @@ public class NewBean {
     public NewBean(@Autowired UserDao userDao) {
         this.userDao = userDao;
     }
-    public String getUserFullNameById(String id) {
+
+    public int getUserNameLengthById(String id) {
         User user = userDao.getUserById(id);
-        return user.getFirstName() + " " + user.getLastName();
+        return (user.getFirstName() + user.getLastName()).length();
     }
 }

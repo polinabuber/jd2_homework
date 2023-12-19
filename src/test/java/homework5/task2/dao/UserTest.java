@@ -31,7 +31,10 @@ public class UserTest {
         user.setLastName("User");
         return user;
     }
-
+    @Before
+    public void setUp() {
+        Mockito.reset(userDao);
+    }
     @Test
     public void testGetUserById() {
         // Given
@@ -63,17 +66,21 @@ public class UserTest {
     }
 
     @Test
-    public void testGetUserFullNameById() {
+    public void testGetUserNameLengthById() {
         // Given
         User user = getUser();
         Mockito.when(userDao.getUserById("1")).thenReturn(user);
 
         // When
-        String result = newBean.getUserFullNameById("1");
+        int result = newBean.getUserNameLengthById("1");
 
         // Then
         Mockito.verify(userDao, Mockito.times(1)).getUserById("1");
-        assertEquals("Test User", result);
+        assertEquals((user.getFirstName() + user.getLastName()).length(), result);
 
+        // Output the length to the console
+        System.out.println("Length of the full name without spaces: " + result);
     }
+
+
 }
