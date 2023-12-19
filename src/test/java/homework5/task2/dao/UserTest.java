@@ -81,6 +81,38 @@ public class UserTest {
         // Output the length to the console
         System.out.println("Length of the full name without spaces: " + result);
     }
+    @Test
+    public void testGetUserByIdWithUserDaoImpl1() {
+        // Given
+        User user = getUser();
+        Mockito.when(userDao.getUserById("1")).thenReturn(user);
+
+        // When
+        User result = userDto.getUserById("1");
+
+        // Then
+        Mockito.verify(userDao, Mockito.times(1)).getUserById("1");
+        assertEquals(user, result);
+
+        System.out.println("User name: " + result.getFirstName() + " " + result.getLastName());
+    }
+
+    @Test
+    public void testGetUserByIdWithUserDaoImpl2() {
+        // Given
+        User user = getUser();
+        Mockito.when(userDao.getUserById("1")).thenReturn(user);
+
+        // When
+        User result = userDto.getUserById("1");
+
+        // Then
+        Mockito.verify(userDao, Mockito.times(1)).getUserById("1");
+        assertEquals(user, result);
+
+        System.out.println("User name: " + result.getFirstName() + " " + result.getLastName());
+    }
+
 
 
 }

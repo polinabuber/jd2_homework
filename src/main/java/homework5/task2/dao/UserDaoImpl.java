@@ -2,13 +2,12 @@ package homework5.task2.dao;
 
 import homework2.task4.*;
 import homework5.task2.entity.*;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.*;
 
 import java.sql.*;
 
 @Repository
 public class UserDaoImpl implements UserDao {
-
 
     @Override
     public User getUserById(String id) {
@@ -32,6 +31,8 @@ public class UserDaoImpl implements UserDao {
     }
 
 
+
+
     public void initMethod() {
         System.out.println("call init in UserDaoImpl");
     }
@@ -41,3 +42,4 @@ public class UserDaoImpl implements UserDao {
     }
 
 }
+
